@@ -22,14 +22,20 @@ The factory binds a run to an adapter at pre-flight and confirms, once the
 deployment variant is known at Stage 2, that the adapter can satisfy the run's
 variant and auth methods before any scaffolding begins.
 
-## Status
+## Shipped adapters
 
-**No concrete adapter ships in this repository yet.** The framework core (process
-and contract) is complete and adapter-ready. The first adapter is a tracked
-follow-up: it requires a clean, public scaffold-source repository so that the
-adapter is both independently authored and usable by anyone who clones it. Until
-that source exists, shipping an adapter here would either depend on a private
-repository or carry stack content that is not yet cleared for publication.
+### `encore-vue`
 
-To contribute an adapter, follow `docs/how-to.md` ("Adding an adapter") and the
-Adapter Manifest schema.
+A neutral adapter for an Encore.ts backend with one or two Vue 3 SPAs on PrimeVue,
+PostgreSQL (Encore `SQLDatabase`, tagged-template SQL, no ORM), and OpenID Connect
+authentication via rauthy. It supports single and dual deployment topologies.
+
+This adapter is **specification-complete**: its manifest, agents, patterns, and
+invariants fully describe how to scaffold the stack. It is **not yet
+Create-eligible** because the runnable scaffold tree it points at
+(`scaffold/`, the forthcoming neutral `encore-vue-template` repository) is a
+separate clean-room follow-up and is not yet bundled. Until then the adapter
+documents the stack but cannot scaffold a project end to end.
+
+To contribute another adapter, follow `docs/how-to.md` ("Adding an adapter") and
+the Adapter Manifest schema.

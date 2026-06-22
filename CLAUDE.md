@@ -14,9 +14,10 @@ architecture and `docs/oap-integration.md` for how the layers map onto OAP.
 - **`contract/`** holds the formal interface schemas between process and
   implementation: Build Specification, Adapter Manifest, Verification Contract,
   Pipeline State, and Governance Envelope.
-- **`adapters/`** is where pluggable, stack-specific implementations live. No
-  concrete adapter ships yet; the first one is a tracked follow-up. See
-  `adapters/README.md`.
+- **`adapters/`** is where pluggable, stack-specific implementations live. One
+  adapter ships: `encore-vue` (Encore.ts + Vue 3 / PrimeVue / rauthy),
+  specification-complete; its runnable scaffold source is a tracked follow-up.
+  See `adapters/README.md`.
 
 ## Working rules
 

@@ -78,9 +78,10 @@ a manifest declaring its capabilities, focused agent prompts, code-generation
 patterns, validation rules, and a scaffold source. Adding a stack means adding an
 adapter; the process and contract layers never change.
 
-**No concrete adapter ships in this repository yet.** Adapters are a tracked
-follow-up (see `adapters/README.md`). The framework core (process + contract)
-is complete and adapter-ready.
+One adapter ships: **`encore-vue`** (Encore.ts + Vue 3 / PrimeVue / rauthy OIDC),
+specification-complete. Its runnable scaffold source is a tracked follow-up, so
+it documents the stack but is not yet Create-eligible. See `adapters/README.md`.
+The framework core (process + contract) is complete and adapter-ready.
 
 ## Directory structure
 
