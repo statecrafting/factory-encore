@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+.vscode/
+
+# Environment files: never commit real values. Example variants are allowed.
+.env*
+!.env.example
+!.env.*.example
