@@ -37,7 +37,7 @@ After reading the query, determine:
 
 - If the query is about **this repository** (architecture, code patterns, dependencies, history), use codebase tools (Grep, Glob, Read, git commands)
 - If the query is about **external topics** (technologies, standards, comparisons), use web tools (WebSearch, WebFetch)
-- Many queries require **both** — spin up sub-agents for each domain
+- Many queries require **both**: spin up sub-agents for each domain
 
 ## Phase 2: Parallel Research Execution
 
@@ -67,7 +67,7 @@ This reduces token usage by ~90% compared to passing full reports inline.
 
 ### Example Dispatch Patterns
 
-**Breadth-first** — "Compare Tauri vs Electron vs Neutralino for desktop apps":
+**Breadth-first**: "Compare Tauri vs Electron vs Neutralino for desktop apps":
 ```
 Task 1: "Investigate: Tauri's architecture, performance characteristics, and ecosystem maturity"
 Task 2: "Investigate: Electron's architecture, performance characteristics, and ecosystem maturity"
@@ -77,14 +77,14 @@ Task 5: "Investigate: Developer experience, tooling, and community size for each
 Task 6: "Quick check: Latest release dates and roadmap status for each framework"
 ```
 
-**Depth-first** — "How does the spec compiler validation pipeline work?":
+**Depth-first**: "How does the spec compiler validation pipeline work?":
 ```
 Task 1: "Deep dive: Trace the spec compiler entry point through all validation phases (codebase research using Grep/Read)"
 Task 2: "Comprehensive: Map all error codes and validation rules in the spec compiler"
 Task 3: "Thorough research: Document the data flow and intermediate representations used during compilation"
 ```
 
-**Simple factual** — "What license does this project use?":
+**Simple factual**: "What license does this project use?":
 ```
 Task 1: "Quick check: Find the LICENSE file and any license declarations in package manifests"
 ```
@@ -93,8 +93,8 @@ Task 1: "Quick check: Find the LICENSE file and any license declarations in pack
 
 After all sub-agents complete:
 
-1. **Collect file references** — gather all `/tmp/research_*.md` paths from sub-agent responses
-2. **Read reports** — use Read to access each research artifact
+1. **Collect file references**: gather all `/tmp/research_*.md` paths from sub-agent responses
+2. **Read reports**: use Read to access each research artifact
 3. **Merge findings**:
    - Identify common themes across reports
    - Deduplicate overlapping information
@@ -104,7 +104,7 @@ After all sub-agents complete:
    - Merge all cited sources and references
    - Remove duplicates
    - Organize by relevance and credibility
-5. **Write final report** — save to `/tmp/research_final_[timestamp].md`
+5. **Write final report**: save to `/tmp/research_final_[timestamp].md`
 
 ## Phase 4: Deliver Final Report
 
@@ -117,9 +117,9 @@ After all sub-agents complete:
 [3-5 paragraph overview synthesizing all findings]
 
 ## Key Findings
-1. **[Finding 1]** — synthesized from multiple sub-agent reports
-2. **[Finding 2]** — cross-referenced and verified
-3. **[Finding 3]** — with supporting evidence
+1. **[Finding 1]**: synthesized from multiple sub-agent reports
+2. **[Finding 2]**: cross-referenced and verified
+3. **[Finding 3]**: with supporting evidence
 
 ## Detailed Analysis
 

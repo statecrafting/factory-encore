@@ -78,10 +78,10 @@ Work through each task systematically:
 ### Per-task loop
 
 1. **Announce** which task you are starting
-2. **Implement** the task — write code, create files, modify configs as needed
+2. **Implement** the task: write code, create files, modify configs as needed
 3. **Verify** the task:
    - Run relevant tests, type checks, or build commands if applicable
-   - Never disable or skip failing tests — fix them
+   - Never disable or skip failing tests: fix them
 4. **Update the plan file**:
    - Check off the completed checkbox: `- [x] Task description`
    - Update `progress` in frontmatter: `(completed / total) * 100`, rounded to nearest integer
@@ -158,7 +158,7 @@ draft --> in-development --> in-review --> completed
 
 - `draft` or `ready-for-development`: Initial states, transition to `in-development` when work begins
 - `in-development`: Active implementation in progress
-- `blocked`: Encountered a blocker — document the issue in the plan and notify the user
+- `blocked`: Encountered a blocker; document the issue in the plan and notify the user
 - `in-review`: All tasks complete, awaiting review
 - `completed`: Review passed (set by user, not by this command)
 

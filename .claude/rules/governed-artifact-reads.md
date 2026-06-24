@@ -1,6 +1,6 @@
 # Governed artifact reads
 
-These rules apply to every orchestrated workflow in this project — skills under `.claude/skills/**`, agents under `.claude/agents/**`, and the init protocol in `AGENTS.md`. Interactive, exploratory tool use answering a user question is not bound by this file.
+These rules apply to every orchestrated workflow in this project: skills under `.claude/skills/**`, agents under `.claude/agents/**`, and the init protocol in `AGENTS.md`. Interactive, exploratory tool use answering a user question is not bound by this file.
 
 > Governed by the factory kernel (spec **`000-factory-kernel`**, FR-001) and constitution Principle 5 (Governed reads). Principle: compiled artifacts under `.derived/**` MUST be read through the spec-spine CLI, never via ad-hoc parsers.
 
@@ -16,7 +16,7 @@ All reads of `.derived/**/*.json` go through `npx spec-spine` subcommands:
 | | `npx spec-spine registry relationships <id> [--json]` |
 | `.derived/codebase-index/` shard tree | `npx spec-spine index check` |
 
-If a subcommand is missing for a legitimate workflow query, the correct path is to request it from the spec-spine project — not to work around it with `python`, `jq`, `awk`, `sed`, or similar.
+If a subcommand is missing for a legitimate workflow query, the correct path is to request it from the spec-spine project: not to work around it with `python`, `jq`, `awk`, `sed`, or similar.
 
 ## Bad pattern
 
@@ -34,10 +34,10 @@ jq -s 'length' .derived/spec-registry/by-spec/*.json
 npx spec-spine index check
 npx spec-spine registry status-report --json
 npx spec-spine registry list --json
-npx spec-spine registry show 000-bootstrap --json
+npx spec-spine registry show 000-factory-kernel --json
 ```
 
 ## Exceptions
 
 - A human running `jq` at the shell to inspect an artifact interactively is not an orchestrated workflow. The rule binds repeatable protocol steps, not debugging.
-- If `npx --no-install spec-spine --version` fails, workflows MUST instruct the user to run `npm install` (or `make setup`) — NOT silently fall back to ad-hoc parsing.
+- If `npx --no-install spec-spine --version` fails, workflows MUST instruct the user to run `npm install` (or `make setup`): NOT silently fall back to ad-hoc parsing.
