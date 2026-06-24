@@ -17,10 +17,11 @@ summary: >
   a cross-repo lockstep: a committed lockfile pins the upstream ref, the baseline
   core services, and the module catalog membership; a fail-visible CI gate
   fetches the baseline at the pinned ref and refuses any drift. The 001/002
-  invariant-hash pin is DEFERRED to the Phase 3 handshake (001 changes in Phase 2
-  when it absorbs the static-serving wiring from spec 010); the mechanism is
-  fully wired and the invariant spec files are verified present, but the hashes
-  are not enforced until Phase 3 flips the pin. Mirrors the OAP spec-212 pattern.
+  invariant-hash pin was DEFERRED through Phase 1 and Phase 2 (001 absorbed the
+  static-serving wiring from spec 010 in Phase 2) and is now ACTIVE: the Phase 3
+  handshake flipped the pin to "pinned", filled the 001/002 spec.md hashes, and
+  bumped pinnedRef to the finalized template-encore main, so a re-hash mismatch
+  on either invariant now fails the gate. Mirrors the OAP spec-212 pattern.
 establishes:
   - "adapters/acme-vue-encore/scripts/lockstep/check.ts"
   - "adapters/acme-vue-encore/scripts/lockstep/check.test.ts"
@@ -38,7 +39,7 @@ classes of upstream change would silently break a generated app:
 
 1. A change to the app's frozen invariants (001 architecture, 002
    security/data), which the generator assumes but does not own.
-2. A reshape of the baseline (a renamed core service, a removed module) that the
+2. A reshape of the baseline (a renamed or removed core service) that the
    "lean baseline + compose" generator depends on structurally.
 
 Neither lives in this repository, so neither is reachable by the in-repo
@@ -58,7 +59,8 @@ generator that consumes the baseline is owned by spec 008.
 
 `baseline.lock.json` MUST pin: `upstreamSource` (the template-encore remote),
 `pinnedRef` (a full 40-hex commit SHA), `baselineStructure` (`coreServices` the
-generator clones, and `modules` the catalog mirrors), and `invariantPin` (the
+generator clones, and `modules` the generator's own catalog covers), and
+`invariantPin` (the
 deferred-or-active 001/002 hash pin: a `status` of `deferred` or `pinned`, the
 `specs` list covering at least 001 and 002, and a `hashes` map filled only when
 pinned). Bumping any pin is a coupling-gated edit to this spec.
@@ -73,17 +75,21 @@ The checker MUST verify, against a baseline checkout at the pinned ref:
   hash is NOT enforced; a visible notice records that the pin is wired but not
   yet active. A missing invariant spec fails in both states.
 - **Baseline structure**: every `coreServices` path exists in the baseline.
-- **Catalog binding**: every `modules` entry has a `manifest.json` both in this
-  repo's catalog and in the baseline catalog.
+- **Catalog binding**: every `modules` entry has a `manifest.json` in this repo's
+  (factory-encore) catalog. Phase 2 relocated the catalog out of the baseline
+  into this repo, so the baseline no longer co-carries it; only the generator's
+  own catalog is verified.
 
-#### FR-003: The invariant pin is deferred until the Phase 3 handshake
+#### FR-003: The invariant pin defers until the Phase 3 handshake, then activates
 
-In Phase 1 `invariantPin.status` MUST be `deferred`. 001 changes in Phase 2 (it
-absorbs the static-serving wiring relocated out of spec 010), so pinning its
-current hash now would lock a value about to change. Phase 3 (after the template
-session finalizes 001/002) flips `status` to `pinned`, fills `hashes`, and bumps
-`pinnedRef` to the finalized baseline. The deferral is visible (a notice), never
-a silent skip.
+While 001 was in flux `invariantPin.status` was `deferred` (Phase 1 and Phase 2):
+001 absorbed the static-serving wiring relocated out of spec 010 in Phase 2, so
+pinning its current hash earlier would have locked a value about to change. The
+Phase 3 handshake (after the template session finalized 001/002) flips `status`
+to `pinned`, fills `hashes` with the SHA-256 of each invariant spec.md, and bumps
+`pinnedRef` to the finalized baseline; this is the committed state. Any deferral
+is visible (a notice), never a silent skip, and a later ref or hash bump remains
+a deliberate, coupling-gated edit to this spec.
 
 #### FR-004: Fail-visible, never skipped-green
 
@@ -102,22 +108,24 @@ lockstep is runnable locally (`npm run lockstep`) and in CI with the same code.
 ## 4. Acceptance criteria
 
 **AC-1.** `npm run lockstep` exits 0 against a template-encore checkout at the
-pinned ref (invariant pin deferred), emitting a visible notice per deferred
-invariant spec, and exits non-zero on any injected structural drift (missing
-core service, missing catalog module, or a missing invariant spec).
+pinned ref with the invariant pin active (the 001/002 spec.md hashes match), and
+exits non-zero on any injected drift: an invariant-hash mismatch, a missing core
+service, a missing catalog module, or a missing invariant spec.
 
 **AC-2.** `vitest` covers each verification dimension: pinned-hash drift
 detection, the deferred pin NOT enforcing hashes (notice only), a missing
 invariant spec failing even when deferred, missing core service, and catalog
 mismatch. It also asserts the committed lockfile is well-formed with
-`invariantPin.status` = `deferred` and empty `hashes` in Phase 1.
+`invariantPin.status` = `pinned` and a full SHA-256 hash for each invariant spec.
 
 **AC-3.** `ci-lockstep.yml` reads `pinnedRef` from the committed lockfile,
 fetches the baseline at that ref, and runs the checker; a fetch or check failure
 fails the job.
 
-**AC-4.** Phase 3 readiness: flipping `invariantPin.status` to `pinned` and
-filling `hashes` activates hash enforcement with no checker code change.
+**AC-4.** Phase 3 handshake (done): flipping `invariantPin.status` to `pinned`
+and filling `hashes` activated hash enforcement with no checker code change (only
+the committed lockfile, its committed-lockfile test assertion, and this spec's
+narrative changed).
 
 ## 5. Out of scope
 

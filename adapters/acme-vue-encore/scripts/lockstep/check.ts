@@ -8,15 +8,17 @@
  *      frozen invariants (001 architecture, 002 security/data). Their spec.md
  *      content hashes are pinned in baseline.lock.json; the check re-reads them
  *      from the baseline at the pinned ref and refuses any mismatch. This
- *      dimension is DEFERRED in Phase 1 (status: "deferred"): the mechanism is
- *      wired and the invariant spec files are verified present, but the hashes
- *      are not enforced until the Phase 3 handshake fills them (001 changes in
- *      Phase 2). A deferred pin emits a visible notice, never a silent pass.
+ *      dimension was DEFERRED through Phase 1 and Phase 2 (001 absorbed the
+ *      static-serving wiring from spec 010 in Phase 2) and is now ACTIVE
+ *      (status: "pinned"): the Phase 3 handshake filled the hashes, so a re-hash
+ *      mismatch is reported as DRIFT and fails. A still-deferred pin (status:
+ *      "deferred") instead emits a visible notice, never a silent pass.
  *   2. Baseline structure. The "lean baseline + compose" generator assumes the
  *      baseline ships a known set of core Encore services. The check asserts
  *      every one is present.
- *   3. Catalog binding. Every module in this repo's catalog has a peer in the
- *      baseline catalog (and vice versa for the pinned set).
+ *   3. Catalog binding. Every module the lockfile pins is present in this repo's
+ *      (factory-encore) catalog. Phase 2 relocated the catalog out of the
+ *      baseline into this repo, so the baseline no longer co-carries it.
  *
  * The check is fail-visible, never skipped-green: a missing source, an
  * unreadable pin, a missing invariant spec, or any verification failure is a
@@ -109,15 +111,17 @@ export function verifyBaselineStructure(source: string, lock: Lockfile): string[
   return failures
 }
 
-/** Dimension 3: this repo's module catalog matches the baseline catalog. */
-export function verifyCatalogBinding(adapterRoot: string, source: string, lock: Lockfile): string[] {
+/**
+ * Dimension 3: every module the lockfile pins is present in this repo's
+ * (factory-encore) catalog. Phase 2 relocated the catalog out of the baseline
+ * into this repo, so the baseline no longer co-carries it; only the generator's
+ * own catalog is verified here.
+ */
+export function verifyCatalogBinding(adapterRoot: string, lock: Lockfile): string[] {
   const failures: string[] = []
   for (const m of lock.baselineStructure.modules) {
     if (!fs.existsSync(path.join(adapterRoot, 'modules', m, 'manifest.json'))) {
       failures.push(`generator catalog missing module manifest: modules/${m}/manifest.json`)
-    }
-    if (!fs.existsSync(path.join(source, 'modules', m, 'manifest.json'))) {
-      failures.push(`baseline catalog missing module: modules/${m} (template-encore)`)
     }
   }
   return failures
@@ -130,7 +134,7 @@ export function runCheck(opts: { source: string; adapterRoot?: string; lock?: Lo
   const failures = [
     ...invariant.failures,
     ...verifyBaselineStructure(opts.source, lock),
-    ...verifyCatalogBinding(adapterRoot, opts.source, lock),
+    ...verifyCatalogBinding(adapterRoot, lock),
   ]
   const checked = [
     ...lock.invariantPin.specs,

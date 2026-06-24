@@ -28,8 +28,8 @@ function makeSyntheticBaseline(status: 'deferred' | 'pinned'): { source: string;
   for (const svc of ['apps/api/auth', 'apps/api/db']) {
     fs.mkdirSync(path.join(source, svc), { recursive: true })
   }
-  fs.mkdirSync(path.join(source, 'modules', 'security-core'), { recursive: true })
-  fs.writeFileSync(path.join(source, 'modules', 'security-core', 'manifest.json'), '{}', 'utf-8')
+  // The catalog lives in this repo (factory-encore), not the baseline (Phase 2),
+  // so the synthetic baseline ships core services + the invariant spec only.
 
   const lock: Lockfile = {
     upstreamSource: 'github.com/stagecraft-ing/template-encore',
@@ -93,10 +93,10 @@ describe('lockstep checker (pure functions)', () => {
     expect(failures.some((f) => f.includes('apps/api/db'))).toBe(true)
   })
 
-  it('detects a module present in the baseline but missing from the generator catalog', () => {
-    const { source, lock } = makeSyntheticBaseline('deferred')
+  it('detects a module the lockfile pins but is missing from the generator catalog', () => {
+    const { lock } = makeSyntheticBaseline('deferred')
     const adapterRoot = tmpDir() // empty catalog
-    const failures = verifyCatalogBinding(adapterRoot, source, lock)
+    const failures = verifyCatalogBinding(adapterRoot, lock)
     expect(failures.some((f) => f.includes('generator catalog missing module'))).toBe(true)
   })
 })
@@ -105,12 +105,15 @@ describe('lockstep checker (committed lockfile against the live baseline)', () =
   const lock = loadLockfile()
   const source = resolveSource([])
 
-  it('ships a well-formed committed lockfile with the invariant pin deferred (Phase 1)', () => {
+  it('ships a well-formed committed lockfile with the invariant pin active (Phase 3)', () => {
     expect(lock.pinnedRef).toMatch(/^[0-9a-f]{40}$/)
-    expect(lock.invariantPin.status).toBe('deferred')
-    expect(lock.invariantPin.hashes).toEqual({})
+    expect(lock.invariantPin.status).toBe('pinned')
     expect(lock.invariantPin.specs).toContain('specs/001-encore-app-architecture/spec.md')
     expect(lock.invariantPin.specs).toContain('specs/002-security-data-invariants/spec.md')
+    // Phase 3 handshake: every pinned invariant spec carries a full SHA-256 hash.
+    for (const rel of lock.invariantPin.specs) {
+      expect(lock.invariantPin.hashes[rel]).toMatch(/^[0-9a-f]{64}$/)
+    }
     expect(lock.baselineStructure.coreServices).toContain('apps/api/auth')
     expect(lock.baselineStructure.modules).toContain('user-management')
     // Every pinned module is present in this repo's own catalog.
@@ -119,13 +122,14 @@ describe('lockstep checker (committed lockfile against the live baseline)', () =
     }
   })
 
-  it.runIf(source !== null)('the generator is in lockstep with the resolved baseline (pin deferred)', () => {
+  it.runIf(source !== null)('the generator is in lockstep with the resolved baseline (pin active)', () => {
     const result = runCheck({ source: source as string })
     if (!result.ok) {
       throw new Error(`lockstep drift:\n${result.failures.join('\n')}`)
     }
     expect(result.ok).toBe(true)
-    // While deferred, the invariant dimension emits notices, not failures.
-    expect(result.notices.length).toBeGreaterThanOrEqual(2)
+    // With the pin active, the invariant hashes are enforced (matched, not
+    // deferred), so the invariant dimension emits no deferral notices.
+    expect(result.notices).toEqual([])
   })
 })
