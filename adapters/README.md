@@ -24,18 +24,31 @@ variant and auth methods before any scaffolding begins.
 
 ## Shipped adapters
 
-### `encore-vue`
+### `acme-vue-encore`
 
 A neutral adapter for an Encore.ts backend with one or two Vue 3 SPAs on PrimeVue,
 PostgreSQL (Encore `SQLDatabase`, tagged-template SQL, no ORM), and OpenID Connect
 authentication via rauthy. It supports single and dual deployment topologies.
 
-This adapter is **specification-complete** and its conventions are verified
-against the runnable scaffold tree (the neutral `template-encore` repository,
-referenced by `scaffold.source`). Create-eligibility is gated on publishing that
-repository under the declared remote; until it is published the adapter fully
-documents the stack and is locally verifiable, but cannot fetch the scaffold to
-create a project end to end.
+This adapter is also the **create-time home** of the `acme-vue-encore` product.
+Beyond the four files above, it carries:
+
+- `scripts/`, the deterministic generator (setup-app / setup-dual-app / add /
+  remove / validate modules, the `scripts/lib/` composers, and the `lockstep/`
+  cross-repo check), with its vitest suite.
+- `modules/`, the module catalog (manifests + `files/` payloads).
+- `orchestration/`, the create-time from-Build-Spec skills (`analyze`,
+  `configure`, `trim`, the `FAC-S*` boundary half of `validate`) and
+  `template-orchestrator.md`.
+
+The generator materializes a project as **"lean baseline + compose"**: it clones
+the `template-encore` lean baseline via `--source` (it does not own the baseline
+app source) and composes the requested modules in. The carry-forward policy
+(`scripts/lib/born-with.ts`) decides what a produced app is born with (the
+governance kernel + the app) and what stays behind (the generator, the catalog,
+the generator meta-specs). The specs that govern this generator live at the
+repository root under `specs/` (007-010, 020), with the kernel (000) and the
+lockstep (031).
 
 To contribute another adapter, follow `docs/how-to.md` ("Adding an adapter") and
 the Adapter Manifest schema.

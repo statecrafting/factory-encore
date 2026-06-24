@@ -1,5 +1,5 @@
 # ============================================================================
-# Adapter Manifest: encore-vue
+# Adapter Manifest: acme-vue-encore
 # ============================================================================
 # A neutral, technology-specific adapter: an Encore.ts backend with one or two
 # Vue 3 single-page apps (Pinia + PrimeVue), PostgreSQL via Encore SQLDatabase
@@ -7,23 +7,24 @@
 #
 # Conformant to contract/schemas/adapter-manifest.schema.yaml (1.1.0).
 #
-# The runnable scaffold tree is the template-encore repository (a neutral,
-# single-author Encore.ts + Vue 3 + rauthy app). This manifest fully specifies
-# the adapter and its conventions match that tree. Create-eligibility is gated on
-# publishing the scaffold repository (see scaffold.source); until then the
-# adapter is specification-complete and locally verifiable.
+# This adapter is the create-time home of the acme-vue-encore product: it ships
+# the deterministic generator (scripts/), the module catalog (modules/), and the
+# create-time orchestration (orchestration/). The generator clones the
+# template-encore lean baseline (see scaffold.source) and composes the requested
+# modules in ("lean baseline + compose"); identity is acme-vue-encore.
 # ============================================================================
 
 schema_version: "1.1.0"
 
 adapter:
-  name: "encore-vue"
-  display_name: "Encore.ts + Vue 3 (PrimeVue, rauthy)"
+  name: "acme-vue-encore"
+  display_name: "Acme Vue + Encore (PrimeVue, rauthy)"
   version: "0.1.0"
   description: >
     Builds an Encore.ts backend and one or two Vue 3 SPAs on PrimeVue, with
-    PostgreSQL and OpenID Connect authentication via rauthy. Supports single and
-    dual deployment topologies.
+    PostgreSQL and OpenID Connect authentication via rauthy. The generator
+    clones the template-encore lean baseline and composes optional modules per
+    Build Spec. Supports single and dual deployment topologies.
 
 stack:
   language: "typescript"
@@ -170,6 +171,13 @@ scaffold:
     the scaffold. Create-eligibility is gated on publishing that repository under
     the remote above; the conventions in this manifest are verified against the
     tree locally.
+  # Baseline membership (coordinated with template-encore, the lean baseline):
+  #   core (ships IN the baseline apps/api): the lib, db, health, auth, gateway,
+  #     and web services, plus the security-core configuration. These are always
+  #     present; they are not composed.
+  #   composable extras (composed via --with): user-management (the app-managed
+  #     role catalog + admin views) and api-gateway (the connectivity-test view).
+  #     data-postgres / data-redis are declarative knobs.
   modules:
     single-public: []
     single-internal: ["user-management"]
@@ -191,6 +199,12 @@ scaffold:
         enum: ["minimal", "public", "internal", "dual"]
       dest:
         type: string
+      source:
+        type: string
+        description: >
+          The template-encore lean-baseline checkout the generator clones from.
+          Defaults to TEMPLATE_ENCORE_SOURCE or a sibling template-encore
+          checkout when omitted.
       with:
         type: array
         items: { type: string }

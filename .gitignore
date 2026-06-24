@@ -2,6 +2,13 @@
 .idea/
 .vscode/
 
+# Node / generator toolchain
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.vite/
+
 # Environment files: never commit real values. Example variants are allowed.
 .env*
 !.env.example

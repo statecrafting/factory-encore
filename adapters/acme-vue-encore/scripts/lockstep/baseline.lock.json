@@ -1,0 +1,31 @@
+{
+  "$comment": "Cross-repo lockstep pin (spec 031). Binds the acme-vue-encore generator + module catalog to the template-encore baseline structure and (once pinned) to the frozen app-invariant spec hashes (001 architecture, 002 security/data). The invariant-hash pin is DEFERRED to the Phase 3 handshake: 001 changes in Phase 2 (it absorbs the static-serving wiring from spec 010), so pinning its current hash now would lock a value about to change. The mechanism is fully wired; flip invariantPin.status to 'pinned' and fill hashes in Phase 3.",
+  "upstreamSource": "github.com/stagecraft-ing/template-encore",
+  "pinnedRef": "e57f7e5d32bfd89dba68f8a927d025e3eb6eee46",
+  "invariantPin": {
+    "status": "deferred",
+    "reason": "001 absorbs the static-serving wiring from spec 010 in Phase 2; pin the 001/002 hashes in the Phase 3 handshake after the template session finalizes those specs.",
+    "specs": [
+      "specs/001-encore-app-architecture/spec.md",
+      "specs/002-security-data-invariants/spec.md"
+    ],
+    "hashes": {}
+  },
+  "baselineStructure": {
+    "coreServices": [
+      "apps/api/auth",
+      "apps/api/db",
+      "apps/api/gateway",
+      "apps/api/health",
+      "apps/api/lib",
+      "apps/api/web"
+    ],
+    "modules": [
+      "api-gateway",
+      "data-postgres",
+      "data-redis",
+      "security-core",
+      "user-management"
+    ]
+  }
+}

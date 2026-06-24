@@ -1,0 +1,117 @@
+{
+  "mapping": {
+    "dependsOn": [
+      "007-module-manifest-schema"
+    ],
+    "implementingPaths": [
+      {
+        "path": "adapters/acme-vue-encore/scripts/add-module.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/born-with.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/env-merger.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/remove-module.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/setup-app.ts",
+        "source": "spec-edge"
+      }
+    ],
+    "resolvedUnits": [
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/add-module.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/add-module.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/born-with.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/born-with.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/env-merger.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/env-merger.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/remove-module.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/remove-module.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/setup-app.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/setup-app.ts"
+        }
+      }
+    ],
+    "specId": "008-encore-generator-core",
+    "specStatus": "approved"
+  },
+  "schemaVersion": "1.1.0",
+  "shardHash": "6d736e2d407d2685aa76565045284bc437397d8a9cf2510cbacb33e3bc76019c"
+}

@@ -78,25 +78,45 @@ a manifest declaring its capabilities, focused agent prompts, code-generation
 patterns, validation rules, and a scaffold source. Adding a stack means adding an
 adapter; the process and contract layers never change.
 
-One adapter ships: **`encore-vue`** (Encore.ts + Vue 3 / PrimeVue / rauthy OIDC),
-specification-complete and verified against its scaffold tree. Create-eligibility
-is gated on publishing that scaffold repository (`template-encore`). See
+One adapter ships: **`acme-vue-encore`** (Encore.ts + Vue 3 / PrimeVue / rauthy
+OIDC). It is also the **create-time home** of that product: it carries the
+deterministic generator (`scripts/`), the module catalog (`modules/`), the
+create-time orchestration (`orchestration/`), and the specs that govern them.
+The generator clones the `template-encore` lean baseline via `--source` and
+composes the requested modules in ("lean baseline + compose"). See
 `adapters/README.md`.
-The framework core (process + contract) is complete and adapter-ready.
+
+Because it now carries governed code, this repository has a kernel: a
+`package.json` (tsx + vitest), a spec-spine corpus under `specs/` with its
+`standards/`, and a resilient CI surface under `.github/workflows/` whose
+terminal `ci-gate` aggregates the governance gate, the generator tests, the
+cross-repo lockstep, and an AI PR review.
 
 ## Directory structure
 
 ```
 factory-encore/
-├── process/
-│   ├── stages/      pipeline stage definitions (pre-flight through handoff)
+├── process/         universal pipeline (pre-flight through handoff)
+│   ├── stages/      pipeline stage definitions
 │   ├── agents/      focused agent prompts (orchestrators + stage agents)
 │   ├── skills/      cross-stage validation rules
 │   └── governance-envelope.yaml
-├── contract/
-│   ├── schemas/     the five contract schemas + stage-output schemas
+├── contract/        the five contract schemas + stage-output schemas
+│   ├── schemas/
 │   └── examples/    worked Build Specification and stage-output examples
-├── adapters/        pluggable, technology-specific implementations (none yet)
+├── adapters/
+│   └── acme-vue-encore/   the Encore.ts + Vue 3 adapter AND its create-time home
+│       ├── manifest.yaml  adapter declaration (identity: acme-vue-encore)
+│       ├── scripts/        the deterministic generator (+ lockstep, + tests)
+│       ├── modules/        the module catalog
+│       ├── orchestration/  create-time from-spec skills + template orchestrator
+│       ├── agents/         code-generation agent prompts
+│       └── patterns/       code-generation patterns
+├── specs/           generator meta-specs (kernel, generator, lockstep, docs)
+├── standards/       spec-spine constitution + contract
+├── spec-spine.toml  governance config
+├── package.json     generator toolchain (tsx + vitest)
+├── .github/workflows/   resilient CI surface (terminal ci-gate)
 └── docs/            architecture, how-to, and OAP integration
 ```
 

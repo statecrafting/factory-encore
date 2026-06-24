@@ -1,0 +1,39 @@
+{
+  "name": "factory-encore",
+  "version": "0.1.0",
+  "description": "Create-time home of the OAP factory: the deterministic acme-vue-encore generator, its module catalog, the from-Build-Spec orchestration, and the FAC-S* gates that govern them.",
+  "private": true,
+  "type": "module",
+  "author": "Bartek Kus",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:modules": "vitest run adapters/acme-vue-encore/scripts",
+    "test:lockstep": "vitest run adapters/acme-vue-encore/scripts/lockstep",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lockstep": "tsx adapters/acme-vue-encore/scripts/lockstep/check.ts",
+    "spec:compile": "spec-spine compile",
+    "spec:lint": "spec-spine lint --fail-on-warn",
+    "spec:index": "spec-spine index",
+    "spec:check": "spec-spine index check",
+    "spec:all": "spec-spine compile && spec-spine lint --fail-on-warn && spec-spine index check"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "spec-spine": "0.8.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.0.18"
+  },
+  "spec-spine": {
+    "spec": "000-factory-kernel"
+  }
+}
