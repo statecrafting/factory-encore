@@ -6,21 +6,21 @@ allowed-tools: Bash, Agent, Read, Edit, Glob, Grep
 
 # Validate and Fix
 
-Run the local CI loop and automatically fix discovered issues. `make ci` covers the same gate set as the GitHub Actions workflows in this repo — if `make ci` passes locally, CI will pass too.
+Run the local CI loop and automatically fix discovered issues. `make ci` covers the same gate set as the GitHub Actions workflows in this repo: if `make ci` passes locally, CI will pass too.
 
 ## Process
 
 ### 1. Run the local CI loop
 
-Invoke `make ci` from the repo root. The `Makefile` is the **single source of truth** for what CI validates. Do not rediscover validation commands by grepping `package.json` or CLAUDE.md — the Makefile already enumerates every gate the CI workflows enforce.
+Invoke `make ci` from the repo root. The `Makefile` is the **single source of truth** for what CI validates. Do not rediscover validation commands by grepping `package.json` or CLAUDE.md: the Makefile already enumerates every gate the CI workflows enforce.
 
 `make ci` composes the gates sequentially:
 
-- **`spine`** — runs all four governance verbs in order:
-  - `make spine-compile`: `npx spec-spine compile` — compiles the spec registry.
-  - `make spine-lint`: `npx spec-spine lint --fail-on-warn` — corpus conformance lint; a warning is a failure.
-  - `make spine-index-check`: `npx spec-spine index check` — staleness gate for the codebase index.
-  - `make spine-couple`: `npx spec-spine couple --base origin/main` — spec/code coupling gate; refuses owned-path changes whose owning spec is not in the diff.
+- **`spine`**: runs all four governance verbs in order:
+  - `make spine-compile`: `npx spec-spine compile`, compiles the spec registry.
+  - `make spine-lint`: `npx spec-spine lint --fail-on-warn`, corpus conformance lint; a warning is a failure.
+  - `make spine-index-check`: `npx spec-spine index check`, staleness gate for the codebase index.
+  - `make spine-couple`: `npx spec-spine couple --base origin/main`, spec/code coupling gate; refuses owned-path changes whose owning spec is not in the diff.
   Mirrors `.github/workflows/spec-spine.yml`.
 - **`make typecheck`** (`npm run typecheck`): `tsc --noEmit` over the generator package. Mirrors `.github/workflows/generator-ci.yml`.
 - **`make test`** (`npm test`): the Vitest generator/module/lockstep suite. Mirrors `.github/workflows/generator-ci.yml`.
@@ -28,33 +28,33 @@ Invoke `make ci` from the repo root. The `Makefile` is the **single source of tr
 
 Pre-commit gate (separate from `make ci`):
 
-- **`make pr-prep`** — regenerates the `.derived/codebase-index/` shards (`make spine-index`) and runs the coupling gate (`make spine-couple`). Run this immediately before `git commit` on a PR. If the index drifted, stage the regenerated artifact.
+- **`make pr-prep`**: regenerates the `.derived/codebase-index/` shards (`make spine-index`) and runs the coupling gate (`make spine-couple`). Run this immediately before `git commit` on a PR. If the index drifted, stage the regenerated artifact.
 
 **If a check is missing, add it to the Makefile and the relevant workflow in the same change.** Never introduce a new validation via a one-off script.
 
-Capture full output — file paths, line numbers, error messages. Categorize findings:
+Capture full output: file paths, line numbers, error messages. Categorize findings:
 
-- **CRITICAL** — security issues, breaking changes, data loss risk, coupling-gate failure (spec 000-factory-kernel FR-002: an owned path changed without its owning spec).
-- **HIGH** — functionality bugs, test failures, build breaks, `npx spec-spine index check` staleness.
-- **MEDIUM** — `npx spec-spine lint` warnings (the gate runs `--fail-on-warn`, so warnings ARE failures here), TypeScript errors, lint rule violations.
-- **LOW** — formatting, minor optimizations.
+- **CRITICAL**: security issues, breaking changes, data loss risk, coupling-gate failure (spec 000-factory-kernel FR-002: an owned path changed without its owning spec).
+- **HIGH**: functionality bugs, test failures, build breaks, `npx spec-spine index check` staleness.
+- **MEDIUM**: `npx spec-spine lint` warnings (the gate runs `--fail-on-warn`, so warnings ARE failures here), TypeScript errors, lint rule violations.
+- **LOW**: formatting, minor optimizations.
 
 ### 2. Strategic Fix Execution
 
-#### Phase 1 — Safe Quick Wins
+#### Phase 1: Safe Quick Wins
 - Start with LOW and MEDIUM findings that can't break anything.
 - Verify each fix by re-running the narrowest affected target (e.g. `make spine-lint` after a spec.md edit, `npm run lint` after a TypeScript style fix).
 
-#### Phase 2 — Functionality Fixes
+#### Phase 2: Functionality Fixes
 - Address HIGH findings one at a time.
 - Run the affected sub-target after each fix to confirm no regressions.
 
-#### Phase 3 — Critical Issues
+#### Phase 3: Critical Issues
 - Handle CRITICAL findings with explicit user confirmation.
 - Provide a detailed plan before executing.
 - Spec/code coupling failures need spec/code judgement: refusing the destructive sub-step is sometimes the right answer (see `.claude/rules/adversarial-prompt-refusal.md`).
 
-#### Phase 4 — Verification
+#### Phase 4: Verification
 - Re-run the full `make ci` composite to confirm end-to-end pass.
 - Provide summary of what was fixed vs. what remains.
 
@@ -91,12 +91,12 @@ After all agents complete:
 - Re-run `make ci` to confirm the full local CI pass.
 - Confirm no new issues were introduced by fixes.
 - Report any remaining manual fixes needed with specific instructions.
-- Summary: `Fixed X/Y issues, Z require manual intervention — make ci: {PASS|FAIL}`
+- Summary: `Fixed X/Y issues, Z require manual intervention; make ci: {PASS|FAIL}`
 
 ## Substrate-specific notes
 
 - `npx spec-spine lint` runs with `--fail-on-warn` (spec 000). A warning is a failure here.
-- The coupling gate compares `HEAD` against `origin/main`. If `origin/main` is not fetched, the gate cannot run — `git fetch origin main` first.
+- The coupling gate compares `HEAD` against `origin/main`. If `origin/main` is not fetched, the gate cannot run: `git fetch origin main` first.
 - The codebase index hashes the always-hashed core (the npm manifest `package.json`, `specs/*/spec.md`, and `spec-spine.toml`) plus the `extra_hashed_inputs` declared in `spec-spine.toml`: `standards/**` and `.github/workflows/**`. After editing a hashed input, if `make spine-index-check` reports stale, run `make spine-index` and stage the regenerated `.derived/codebase-index/` shards.
 - `.claude/**`, `.mcp.json`, `AGENTS.md`, and `CLAUDE.md` are NOT hashed in this repo (they are absent from `spec-spine.toml`'s hashed set), so editing agents, skills, rules, or those files does not trip the staleness gate. This differs from the produced app, which hashes its `.claude/**` and `.mcp.json` byte-for-byte.
 

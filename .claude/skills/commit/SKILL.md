@@ -60,7 +60,7 @@ Use `git add` with specific file paths. Do not use `git add -A` or `git add .` u
 
 ## 4. Pre-commit gate
 
-Run `make pr-prep` before committing on a PR branch. This regenerates the codebase index and runs the coupling gate (`npx spec-spine couple --base origin/main`) — the two checks that fail first in CI when forgotten. If the index drifted, stage the regenerated `.derived/codebase-index/` shards.
+Run `make pr-prep` before committing on a PR branch. This regenerates the codebase index and runs the coupling gate (`npx spec-spine couple --base origin/main`): the two checks that fail first in CI when forgotten. If the index drifted, stage the regenerated `.derived/codebase-index/` shards.
 
 ```bash
 make pr-prep
