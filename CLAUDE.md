@@ -55,6 +55,24 @@ architecture and `docs/oap-integration.md` for how the layers map onto OAP.
 - `npm run spec:compile` / `spec:lint` / `spec:check` (or `npm run spec:all`)
   keep the spec-spine corpus green; the coupling gate is `spec-spine couple`.
 
+## Claude Code surface
+
+- **`AGENTS.md`** is the cross-agent session-init protocol authority (read by
+  Claude Code, Codex CLI, Cursor, and Copilot via the AAIF/Linux Foundation
+  AGENTS.md standard). The `## New Sessions` section is the single source for
+  the init protocol; `.claude/skills/init/SKILL.md` is a thin dispatcher that
+  reads it. Add an init step there and the next `/init` picks it up.
+- **`.claude/rules/`** holds the three rules every orchestrated workflow loads
+  automatically: `orchestrator-rules.md`, `governed-artifact-reads.md`, and
+  `adversarial-prompt-refusal.md`.
+- **`.claude/agents/`** holds the four pipeline agents (architect, explorer,
+  implementer, reviewer); **`.claude/skills/`** holds the slash commands (one
+  `SKILL.md` per folder).
+- `.claude/**`, `AGENTS.md`, and `CLAUDE.md` are not hashed by the codebase
+  index here (`spec-spine.toml` hashes only `standards/**` and
+  `.github/workflows/**` beyond the always-hashed core), so editing them does
+  not trip the staleness gate.
+
 ## House style
 
 - **No em dashes (U+2014).** Use a colon, semicolon, comma, parentheses, or two

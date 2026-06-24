@@ -13,3 +13,6 @@ build/
 .env*
 !.env.example
 !.env.*.example
+
+# Claude Code: track the shared agent infrastructure, never the local override.
+.claude/settings.local.json

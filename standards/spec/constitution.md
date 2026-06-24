@@ -1,7 +1,7 @@
 # Constitution (tier 2)
 
-Durable principles for this template, subordinate to the bootstrap spec
-(`specs/000-bootstrap/spec.md`) where they differ.
+Durable principles for this repository, subordinate to the factory kernel
+(`specs/000-factory-kernel/spec.md`) where they differ.
 
 1. **Markdown-authored truth.** All authored truth lives in markdown with
    YAML frontmatter. Derived JSON under `.derived/` is owned by the
