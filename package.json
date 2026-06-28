@@ -16,6 +16,8 @@
     "test:lockstep": "vitest run adapters/acme-vue-encore/scripts/lockstep",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lockstep": "tsx adapters/acme-vue-encore/scripts/lockstep/check.ts",
+    "e2e:struct": "bash adapters/acme-vue-encore/e2e/run-e2e.sh matrix --no-build",
+    "e2e:build": "bash adapters/acme-vue-encore/e2e/run-e2e.sh all",
     "spec:compile": "spec-spine compile",
     "spec:lint": "spec-spine lint --fail-on-warn",
     "spec:index": "spec-spine index",

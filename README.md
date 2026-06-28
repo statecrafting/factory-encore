@@ -90,7 +90,9 @@ Because it now carries governed code, this repository has a kernel: a
 `package.json` (tsx + vitest), a spec-spine corpus under `specs/` with its
 `standards/`, and a resilient CI surface under `.github/workflows/` whose
 terminal `ci-gate` aggregates the governance gate, the generator tests, the
-cross-repo lockstep, and an AI PR review.
+structural generator e2e, the cross-repo lockstep, and an AI PR review. The
+expensive build-matrix e2e (compiling every produced app) runs nightly and
+non-gating, with a weekly against-main drift sweep (spec 007).
 
 The generator is bound to the baseline it clones by a cross-repo **lockstep**
 (`adapters/acme-vue-encore/scripts/lockstep/baseline.lock.json`, spec 006): the

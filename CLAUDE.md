@@ -53,6 +53,11 @@ architecture and `docs/oap-integration.md` for how the layers map onto OAP.
   runs `tsc --noEmit`.
 - `npm run lockstep` checks the generator against the pinned `template-encore`
   baseline (spec 006).
+- `npm run e2e:struct` runs the structural generator e2e (Node-only, the cheap
+  PR lane); `npm run e2e:build` runs the full build matrix (needs the Encore CLI
+  + Docker; the nightly lane). Both drive the generator against a
+  `template-encore` checkout (spec 007). Set `TEMPLATE_ENCORE` if it is not a
+  sibling checkout.
 - `npm run spec:compile` / `spec:lint` / `spec:check` (or `npm run spec:all`)
   keep the spec-spine corpus green; the coupling gate is `spec-spine couple`.
 

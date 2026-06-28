@@ -1,28 +1,28 @@
 {
   "mapping": {
+    "dependsOn": [
+      "002-encore-generator-core",
+      "006-factory-schema-lockstep"
+    ],
     "implementingPaths": [
       {
-        "path": "",
-        "source": "manifest-metadata"
-      },
-      {
-        "path": ".github/workflows/ai-pr-review.yml",
+        "path": ".github/workflows/generator-e2e-drift.yml",
         "source": "spec-edge"
       },
       {
-        "path": ".github/workflows/ci.yml",
+        "path": ".github/workflows/generator-e2e-nightly.yml",
         "source": "spec-edge"
       },
       {
-        "path": ".github/workflows/generator-ci.yml",
+        "path": ".github/workflows/generator-e2e.yml",
         "source": "spec-edge"
       },
       {
-        "path": ".github/workflows/spec-spine.yml",
+        "path": "adapters/acme-vue-encore/e2e/lib/common.sh",
         "source": "spec-edge"
       },
       {
-        "path": "standards/",
+        "path": "adapters/acme-vue-encore/e2e/run-e2e.sh",
         "source": "spec-edge"
       }
     ],
@@ -30,72 +30,72 @@
       {
         "locations": [
           {
-            "file": ".github/workflows/ai-pr-review.yml"
+            "file": ".github/workflows/generator-e2e-drift.yml"
           }
         ],
         "ownership": true,
         "sourceField": "establishes",
         "unit": {
           "kind": "file",
-          "path": ".github/workflows/ai-pr-review.yml"
+          "path": ".github/workflows/generator-e2e-drift.yml"
         }
       },
       {
         "locations": [
           {
-            "file": ".github/workflows/ci.yml"
+            "file": ".github/workflows/generator-e2e-nightly.yml"
           }
         ],
         "ownership": true,
         "sourceField": "establishes",
         "unit": {
           "kind": "file",
-          "path": ".github/workflows/ci.yml"
+          "path": ".github/workflows/generator-e2e-nightly.yml"
         }
       },
       {
         "locations": [
           {
-            "file": ".github/workflows/generator-ci.yml"
+            "file": ".github/workflows/generator-e2e.yml"
           }
         ],
         "ownership": true,
         "sourceField": "establishes",
         "unit": {
           "kind": "file",
-          "path": ".github/workflows/generator-ci.yml"
+          "path": ".github/workflows/generator-e2e.yml"
         }
       },
       {
         "locations": [
           {
-            "file": ".github/workflows/spec-spine.yml"
+            "file": "adapters/acme-vue-encore/e2e/lib/common.sh"
           }
         ],
         "ownership": true,
         "sourceField": "establishes",
         "unit": {
           "kind": "file",
-          "path": ".github/workflows/spec-spine.yml"
+          "path": "adapters/acme-vue-encore/e2e/lib/common.sh"
         }
       },
       {
         "locations": [
           {
-            "file": "standards/"
+            "file": "adapters/acme-vue-encore/e2e/run-e2e.sh"
           }
         ],
         "ownership": true,
         "sourceField": "establishes",
         "unit": {
           "kind": "file",
-          "path": "standards/"
+          "path": "adapters/acme-vue-encore/e2e/run-e2e.sh"
         }
       }
     ],
-    "specId": "000-factory-kernel",
+    "specId": "007-generator-e2e-harness",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "5ec59356079055e60e64f614b2cc72df48312376077e952d0aecf1a82dfac88f"
+  "shardHash": "8392906efb5a925fc049fede35b2d28d4dcb38910e2f06bae377d25e86915630"
 }

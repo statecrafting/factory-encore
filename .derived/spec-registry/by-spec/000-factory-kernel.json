@@ -52,6 +52,6 @@
     "summary": "factory-encore now carries governed code (the create-time generator), so it earns a kernel. This spec adopts spec-spine over the corpus (compile, fail-on-warn lint, index staleness gate, PR-time coupling gate) and stands up the OAP resilient CI surface: a path-routed orchestrator whose terminal ci-gate aggregates the governance gate, the generator test gate, the lockstep gate, and an AI PR review that passes with a visible notice on a Claude API failure (never a silent green).\n",
     "title": "Factory kernel: spec-spine governance and the resilient CI surface"
   },
-  "shardHash": "7eedf99339ba21bae4be575d0678c683078ba1d89178e3a2944d5a26e70f45fe",
+  "shardHash": "29d57a3ce1a316526684b6fe4bdedc662a487001739b466a2ce52ca09e25a5e1",
   "specVersion": "1.1.0"
 }

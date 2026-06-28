@@ -84,6 +84,13 @@ jobs:
     if: needs.changes.outputs.generator == 'true'
     uses: ./.github/workflows/generator-ci.yml
 
+  # routed by changed paths -- structural e2e (Node-only, cheap). The expensive
+  # build matrix stays nightly (generator-e2e-nightly.yml); spec 007.
+  generator-e2e:
+    needs: changes
+    if: needs.changes.outputs.generator == 'true'
+    uses: ./.github/workflows/generator-e2e.yml
+
   # constitutional (always-run)
   spec-spine:
     uses: ./.github/workflows/spec-spine.yml
@@ -108,6 +115,7 @@ jobs:
     needs:
       - changes
       - generator
+      - generator-e2e
       - spec-spine
       - lockstep
       - ai-review

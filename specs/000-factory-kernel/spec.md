@@ -79,10 +79,13 @@ upstream `failure` or `cancelled`.
 #### FR-004: Always-on governance, routed app checks
 
 The governance gate (`spec-spine.yml`) and the lockstep gate run on every PR
-(never path-filtered). The generator test gate (`generator-ci.yml`: typecheck +
-vitest) is routed on the generator surface (`adapters/**`, `package.json`,
-`tsconfig.json`). On `merge_group` / `workflow_dispatch` the routes fall back to
-`true` (no base to diff) and the full suite runs.
+(never path-filtered). Two gates are routed on the generator surface
+(`adapters/**`, `package.json`, `tsconfig.json`): the generator test gate
+(`generator-ci.yml`: typecheck + vitest) and the structural generator e2e
+(`generator-e2e.yml`, owned by spec 007). On `merge_group` / `workflow_dispatch`
+the routes fall back to `true` (no base to diff) and the full suite runs. The
+expensive build-matrix e2e lanes (spec 007) run on a schedule, are non-gating,
+and are not aggregated by `ci-gate`.
 
 #### FR-005: AI review API-failure resilience, never silent
 
