@@ -228,7 +228,7 @@ combo() {
 # results recording -------------------------------------------------------
 record() { printf '%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" >>"$RESULTS_TSV"; }
 report() {
-  [ -f "$RESULTS_TSV" ] || { warn "no results yet"; return; }
+  [ -f "$RESULTS_TSV" ] || { fail "no results yet"; return 1; }
   printf '\n%s\n' "${C_BLU}=== RESULTS ===${C_RST}"
   printf '%-9s %-26s %-12s %s\n' PROFILE MODULES VERDICT NOTES
   printf '%-9s %-26s %-12s %s\n' "-------" "------------------------" "----------" "-----"
@@ -239,6 +239,11 @@ report() {
     printf "%-9s %-26s ${col}%-12s${C_RST} %s\n" "$prof" "$mods" "$verdict" "$notes"
   done < "$RESULTS_TSV"
   printf '\n%s %d / %d combos green\n' "${C_BLU}summary:${C_RST}" "$pass" "$total"
+  # Propagate the matrix verdict as the exit code so the CI lanes actually gate:
+  # report is the terminal step of matrix() and the matrix/all/combo dispatch, so
+  # a non-zero return here fails `npm run e2e:struct` / `e2e:build` on any red
+  # combo (spec 007 FR-007). Zero combos is also a failure (nothing ran).
+  [ "$total" -gt 0 ] && [ "$pass" -eq "$total" ]
 }
 
 # the full matrix ---------------------------------------------------------

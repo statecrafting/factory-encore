@@ -146,6 +146,20 @@ noise), rather than failing a gate. An operational failure (cannot fetch the
 baseline) still fails the job (fail-visible, never skipped-green). This mirrors
 OAP's `ci-factory-schema-lockstep-cron` against-main posture.
 
+### 3.4 The gate must be able to go red
+
+#### FR-007: The runner exit code propagates the matrix verdict
+
+A lane is only a gate if it can fail. The runner (`run-e2e.sh`) MUST exit
+non-zero when any combo is not green, and when zero combos ran (nothing
+verified is a failure, not a pass). The matrix, `all`, and single-`combo`
+dispatch paths all terminate in the results report, so the report's exit status
+is the runner's exit status: it is zero only when every recorded combo is `PASS`
+(or `STRUCT-OK` under `--no-build`) and at least one combo ran. Without this, a
+red combo would print in the table but the lane would still exit zero, silently
+defeating FR-004 (the required PR gate), FR-005 (issue-on-failure nightly), and
+FR-006 (drift issue-routing).
+
 ## 4. Acceptance criteria
 
 **AC-1.** `npm run e2e:struct` produces all 22 apps and passes structural
@@ -168,6 +182,11 @@ surface is untouched passes).
 **AC-5.** `generator-e2e-drift.yml` runs weekly against `template-encore@main`,
 opens/annotates a single label-deduplicated tracking issue on a build
 divergence, and fails the job on an operational (fetch) failure.
+
+**AC-6.** The runner exits non-zero when the results table contains any non-green
+verdict (or zero combos) and zero only on an all-green matrix, so `npm run
+e2e:struct` / `e2e:build` and the three lanes fail visibly on a red combo
+(FR-007).
 
 ## 5. Out of scope
 
