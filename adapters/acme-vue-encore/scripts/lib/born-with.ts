@@ -32,9 +32,10 @@ export const GENERATOR_ARTIFACT_TOP_LEVEL: ReadonlySet<string> = new Set([
   'scripts', // the generator itself
   'modules', // the module catalog
   'orchestration', // create-time from-spec orchestration
-  'tools', // template-dev governance lint tooling
-  '.derived', // compiled spec registry + codebase index (recompiled per app)
-  'Makefile', // template-dev build entry
+  '.derived', // compiled spec registry + codebase index. NOT carried: it is
+  // regenerated per produced app at scaffold time over the produced tree;
+  // carrying the template's copy would be stale (different specs/tools/etc.)
+  // and fail the produced app's own `spec-spine index check`.
 ])
 
 // The generator meta-specs (the specs that govern the generator / module
@@ -54,12 +55,22 @@ export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
 // with, carried verbatim from the baseline. AGENTS.md is the vendor-neutral
 // agent guide that is part of the kernel (read by every agent), not a
 // template-dev artifact, so it is carried.
+//
+// `Makefile` and `tools/` are kernel, not generator machinery: the carried
+// spec corpus and CI depend on them in the produced app. Spec 000-bootstrap
+// `establishes: Makefile` (stripping it makes the produced app's
+// `spec-spine index` emit I-004 for a missing file unit, so `index check`
+// fails), and the carried `ci-supply-chain.yml` runs
+// `tools/lint/workflow-pins.sh` (stripping `tools/` makes that step exit 127).
+// The template's own `tools/` today is `tools/lint/` only.
 export const BORN_WITH_KERNEL_TOP_LEVEL: ReadonlySet<string> = new Set([
   'standards',
   'spec-spine.toml',
   '.claude',
   'CODEMAP.md',
   'AGENTS.md',
+  'Makefile',
+  'tools',
 ])
 
 // Skipped anywhere in the tree (at any depth), never carried.

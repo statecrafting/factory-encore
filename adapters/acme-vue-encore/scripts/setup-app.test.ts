@@ -55,10 +55,19 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'specs', '005-architecture-doc-governance'))).toBe(false)
   })
 
-  it('does not carry generator artifacts (the generator, the catalog, orchestration, tooling)', () => {
-    for (const artifact of ['scripts', 'modules', 'orchestration', 'tools', '.derived', 'Makefile']) {
+  it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived)', () => {
+    for (const artifact of ['scripts', 'modules', 'orchestration', '.derived']) {
       expect(fs.existsSync(path.join(dest, artifact))).toBe(false)
     }
+  })
+
+  it('carries the born-with governance substrate (Makefile, tools/lint) the produced specs + CI require', () => {
+    // Makefile is established by the carried spec 000-bootstrap; tools/lint is
+    // run by the carried ci-supply-chain workflow. Stripping them made every
+    // produced app fail its own born-with CI (I-004 on the Makefile unit;
+    // exit 127 on the missing lint script).
+    expect(fs.existsSync(path.join(dest, 'Makefile'))).toBe(true)
+    expect(fs.existsSync(path.join(dest, 'tools', 'lint', 'x.sh'))).toBe(true)
   })
 
   it('carries root config files', () => {

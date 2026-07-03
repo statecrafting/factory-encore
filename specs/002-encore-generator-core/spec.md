@@ -67,17 +67,31 @@ runs `setup-app` twice is owned by spec 004.
 `--dest`, excluding template-governance machinery that does not belong in a
 generated application:
 
-**Included** (destination-relevant tree):
-`apps/api/`, `apps/web/`, `apps/web-internal/`, `packages/`, root config
-files (`package.json`, `tsconfig*.json`, `eslint.config.mjs`,
-`.env.example`, `.gitignore`, `pnpm-workspace.yaml`).
+**Included** (carried into the produced app):
+- the runnable app: `apps/api/`, `apps/web/`, `apps/web-internal/`,
+  `packages/`, root config (`package.json`, `tsconfig*.json`,
+  `eslint.config.mjs`, `.env.example`, `.gitignore`, `pnpm-workspace.yaml`);
+- the born-with governance kernel: `standards/`, `spec-spine.toml`,
+  `.claude/`, `CODEMAP.md`, `AGENTS.md`, `Makefile`, `tools/`;
+- the app-invariant specs under `specs/` (the generator meta-specs are
+  dropped), and `docs/` minus the template-dev docs.
 
-**Excluded** (template machinery):
-`modules/`, `scripts/`, `specs/`, `standards/`, `tools/`, `.derived/`,
-`.claude/`, `orchestration/`, `docs/encore-ts/`, `Makefile`, `bin/`.
+**Excluded** (create-time generator machinery):
+`scripts/`, `modules/`, `orchestration/`, `.derived/`, the generator
+meta-specs, `docs/encore-ts/`, `docs/migration/`, `node_modules/`, `.git/`,
+`bin/`.
 
-The destination is a clean Encore app and SPAs with no spec-spine or
-generator tooling present.
+`Makefile` and `tools/` are governance substrate, not generator machinery:
+the carried spec corpus and CI depend on them in the produced app. Spec
+000-bootstrap `establishes: Makefile`, and the carried `ci-supply-chain.yml`
+runs `tools/lint/workflow-pins.sh`; stripping them made every produced app
+fail its own born-with CI (a missing `Makefile` unit raises spec-lint I-004
+so `index check` fails; the missing lint script exits 127). `.derived/` is
+excluded because it is regenerated per produced app at scaffold time over
+the produced tree, not carried verbatim (the template's copy would be
+stale). The canonical carry classifier is
+`adapters/acme-vue-encore/scripts/lib/born-with.ts`
+(`BORN_WITH_KERNEL_TOP_LEVEL` / `GENERATOR_ARTIFACT_TOP_LEVEL`).
 
 #### FR-002 — Auth-driver selection by configuration
 

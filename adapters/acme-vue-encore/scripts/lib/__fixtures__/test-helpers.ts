@@ -224,12 +224,14 @@ function writeFile(root: string, rel: string, content: string): void {
  * deterministically without depending on the real (large) template-encore tree.
  *
  * It contains, by carry decision:
- *   kernel (carried):  standards/, spec-spine.toml, .claude/, CODEMAP.md, AGENTS.md
+ *   kernel (carried):  standards/, spec-spine.toml, .claude/, CODEMAP.md,
+ *                      AGENTS.md, Makefile, tools/ (governance substrate the
+ *                      carried specs + CI require)
  *   app (carried):     apps/, packages/, root config, docs/ (minus dev docs),
  *                      specs/001 + specs/002 (the frozen app-invariant specs)
- *   generator-artifact (skipped): scripts/, modules/, orchestration/, tools/,
+ *   generator-artifact (skipped): scripts/, modules/, orchestration/,
  *                      .derived/, specs/002 + specs/005 (generator meta-specs),
- *                      Makefile, node_modules/, .git/, docs/encore-ts
+ *                      node_modules/, .git/, docs/encore-ts
  *
  * Returns the baseline root path.
  */
@@ -294,8 +296,12 @@ export function makeBaselineFixture(): string {
   writeFile(root, 'scripts/setup-app.ts', "console.log('generator')\n")
   writeFile(root, 'modules/security-core/manifest.json', '{ "name": "security-core" }\n')
   writeFile(root, 'orchestration/template-orchestrator.md', '# orchestrator\n')
-  writeFile(root, 'tools/lint/x.sh', '#!/bin/sh\n')
   writeFile(root, '.derived/codebase-index/x.json', '{}\n')
+
+  // --- born-with governance substrate (carried): the produced app's own
+  // carried specs (000-bootstrap establishes Makefile) and CI
+  // (ci-supply-chain runs tools/lint) depend on these ---
+  writeFile(root, 'tools/lint/x.sh', '#!/bin/sh\n')
   writeFile(root, 'Makefile', 'all:\n')
 
   // --- skipped anywhere ---
