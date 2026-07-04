@@ -100,6 +100,20 @@ Recorded refreshes: `pinnedRef` advanced from `b37d3d7` to `c7603ee`
 (template-encore main) on 2026-06-24 after verifying the intervening main commits
 touched no pinned unit: the invariant spec.md hashes re-hash identical and the core
 services are unchanged, so the bump moved only the ref, not the enforced content.
+It then advanced from `c7603ee` to `89326a5` (template-encore main) on 2026-07-04.
+This refresh is different in kind: it deliberately **re-blesses changed invariant
+hashes**. Between the two refs template-encore reworked `security-data-invariants`
+INV-6 from the Redis `rate-limiter-flexible` middleware to Postgres-native
+fixed-window rate limiting (an UNLOGGED `rate_limit_counter` table plus migrations,
+with `apiRateLimit` now also mounted on the `gateway` service and a `user_account`
+email-column change) and renumbered its corpus to serial `000-016`, which together
+rewrote both invariant spec.md files. Adopting that baseline is the coupling-gated
+decision recorded here: the intervening main commits were reviewed, the pinned core
+services are all present and unchanged at `89326a5`, and the module catalog is
+factory-encore's own and unaffected, so only the two invariant hashes and the ref
+move. This is not a spec edited to justify code: the generator gains nothing it did
+not already do; the pin is advanced, with cause, so the gate re-anchors on the
+baseline the generator now clones.
 
 #### FR-004: Fail-visible, never skipped-green
 
