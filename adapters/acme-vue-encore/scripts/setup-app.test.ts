@@ -48,11 +48,19 @@ describe('copyBaseline: born-with carry-forward', () => {
     expect(fs.existsSync(path.join(dest, 'AGENTS.md'))).toBe(true)
   })
 
-  it('carries the frozen app-invariant specs (001, 002) but not the generator meta-specs', () => {
+  it('carries the baseline app specs (000-bootstrap, 001, 002) but drops every factory-encore meta-spec (000-007)', () => {
+    // Baseline app specs are carried; their slugs differ from the meta-spec set.
+    expect(fs.existsSync(path.join(dest, 'specs', '000-bootstrap'))).toBe(true)
     expect(fs.existsSync(path.join(dest, 'specs', '001-encore-app-architecture'))).toBe(true)
     expect(fs.existsSync(path.join(dest, 'specs', '002-security-data-invariants'))).toBe(true)
+    // Every factory-encore generator meta-spec is dropped, including the kernel
+    // (000), lockstep (006), and e2e-harness (007) specs added to the set after
+    // it was first written.
+    expect(fs.existsSync(path.join(dest, 'specs', '000-factory-kernel'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '002-encore-generator-core'))).toBe(false)
     expect(fs.existsSync(path.join(dest, 'specs', '005-architecture-doc-governance'))).toBe(false)
+    expect(fs.existsSync(path.join(dest, 'specs', '006-factory-schema-lockstep'))).toBe(false)
+    expect(fs.existsSync(path.join(dest, 'specs', '007-generator-e2e-harness'))).toBe(false)
   })
 
   it('does not carry generator artifacts (the generator, the catalog, orchestration, .derived)', () => {

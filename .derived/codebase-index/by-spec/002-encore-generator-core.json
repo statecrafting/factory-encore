@@ -9,6 +9,10 @@
         "source": "spec-edge"
       },
       {
+        "path": "adapters/acme-vue-encore/scripts/lib/adapter-manifest.ts",
+        "source": "spec-edge"
+      },
+      {
         "path": "adapters/acme-vue-encore/scripts/lib/born-with.ts",
         "source": "spec-edge"
       },
@@ -21,11 +25,23 @@
         "source": "spec-edge"
       },
       {
+        "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/lib/template-json.ts",
+        "source": "spec-edge"
+      },
+      {
         "path": "adapters/acme-vue-encore/scripts/remove-module.ts",
         "source": "spec-edge"
       },
       {
         "path": "adapters/acme-vue-encore/scripts/setup-app.ts",
+        "source": "spec-edge"
+      },
+      {
+        "path": "adapters/acme-vue-encore/scripts/validate-modules.ts",
         "source": "spec-edge"
       }
     ],
@@ -41,6 +57,19 @@
         "unit": {
           "kind": "file",
           "path": "adapters/acme-vue-encore/scripts/add-module.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/adapter-manifest.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/adapter-manifest.ts"
         }
       },
       {
@@ -85,6 +114,32 @@
       {
         "locations": [
           {
+            "file": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+        }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/lib/template-json.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/template-json.ts"
+        }
+      },
+      {
+        "locations": [
+          {
             "file": "adapters/acme-vue-encore/scripts/remove-module.ts"
           }
         ],
@@ -107,11 +162,24 @@
           "kind": "file",
           "path": "adapters/acme-vue-encore/scripts/setup-app.ts"
         }
+      },
+      {
+        "locations": [
+          {
+            "file": "adapters/acme-vue-encore/scripts/validate-modules.ts"
+          }
+        ],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/validate-modules.ts"
+        }
       }
     ],
     "specId": "002-encore-generator-core",
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "67af810defc85f4ef68da17a97e3a6436de4976f224f6b7c6113a5e219e5dc74"
+  "shardHash": "f6665889b6d7c13b45285b9a8ea94400fd0a9c164fccafd43b888951c67febca"
 }

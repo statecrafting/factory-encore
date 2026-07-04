@@ -38,17 +38,24 @@ export const GENERATOR_ARTIFACT_TOP_LEVEL: ReadonlySet<string> = new Set([
   // and fail the produced app's own `spec-spine index check`.
 ])
 
-// The generator meta-specs (the specs that govern the generator / module
-// system). A produced app carries the product / app specs under specs/ but
-// NEVER these: they describe the create-time machinery, which the produced app
-// does not contain. This set is the generator home's knowledge of its own
-// meta-specs; it is kept in lockstep with specs/ in this repository.
+// The generator meta-specs: factory-encore's ENTIRE specs/ corpus. This repo is
+// a create-time home with no product/app specs of its own, so every spec here
+// governs the generator / module system / kernel / CI and MUST NOT reach a
+// produced app: they describe the create-time machinery, which the produced app
+// does not contain. A produced app carries the baseline's own product/app specs
+// under specs/ (template-encore's slugs, e.g. `001-encore-app-architecture`,
+// `000-bootstrap`) which differ from these, so this set never drops a carried
+// app spec. It is kept in lockstep with specs/ in this repository (000-007); a
+// new meta-spec MUST be added here (guarded by setup-app.test.ts).
 export const GENERATOR_META_SPEC_IDS: ReadonlySet<string> = new Set([
+  '000-factory-kernel',
   '001-module-manifest-schema',
   '002-encore-generator-core',
   '003-user-management-module',
   '004-dual-app-generator',
   '005-architecture-doc-governance',
+  '006-factory-schema-lockstep',
+  '007-generator-e2e-harness',
 ])
 
 // The born-with kernel: the governance substrate every produced app ships

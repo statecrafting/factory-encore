@@ -23,6 +23,10 @@
       },
       {
         "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/validate-modules.ts"
+      },
+      {
+        "kind": "file",
         "path": "adapters/acme-vue-encore/scripts/lib/env-merger.ts"
       },
       {
@@ -32,6 +36,18 @@
       {
         "kind": "file",
         "path": "adapters/acme-vue-encore/scripts/lib/born-with.ts"
+      },
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/lib/template-json.ts"
+      },
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+      },
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/lib/adapter-manifest.ts"
       }
     ],
     "id": "002-encore-generator-core",
@@ -72,6 +88,6 @@
     "summary": "The app generator: setup-app.ts scaffolds a new application by copying the base Encore app, selecting an auth driver by configuration, composing selected service modules (directory copy + declarative merge via encore-composer.ts, including a JSONC-aware CORS merge), merging env templates, and regenerating the typed client. add-module.ts / remove-module.ts apply the same composition incrementally. Three profiles: minimal, public, internal.\n",
     "title": "Encore generator core: copy-base + select-driver + merge-config"
   },
-  "shardHash": "e2863ed8179f56469b33201203b07276d387da53dbde3842379fcf638358d059",
+  "shardHash": "401b4b3afdc5d452731a856af0c495a2ceda881560ab9ef04d389a59f6a9820c",
   "specVersion": "1.1.0"
 }

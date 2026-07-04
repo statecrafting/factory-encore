@@ -228,9 +228,12 @@ function writeFile(root: string, rel: string, content: string): void {
  *                      AGENTS.md, Makefile, tools/ (governance substrate the
  *                      carried specs + CI require)
  *   app (carried):     apps/, packages/, root config, docs/ (minus dev docs),
- *                      specs/001 + specs/002 (the frozen app-invariant specs)
+ *                      specs/000-bootstrap + specs/001-encore-app-architecture +
+ *                      specs/002-security-data-invariants (baseline app specs)
  *   generator-artifact (skipped): scripts/, modules/, orchestration/,
- *                      .derived/, specs/002 + specs/005 (generator meta-specs),
+ *                      .derived/, the factory-encore meta-specs (000-factory-kernel,
+ *                      002-encore-generator-core, 005-architecture-doc-governance,
+ *                      006-factory-schema-lockstep, 007-generator-e2e-harness),
  *                      node_modules/, .git/, docs/encore-ts
  *
  * Returns the baseline root path.
@@ -286,11 +289,20 @@ export function makeBaselineFixture(): string {
   writeFile(root, 'CODEMAP.md', '# CODEMAP\n')
   writeFile(root, 'AGENTS.md', '# Agent guide (vendor-neutral kernel)\n')
 
-  // --- app-invariant specs (carried), generator meta-specs (skipped) ---
+  // --- app specs + baseline bootstrap (carried), generator meta-specs
+  //     (skipped). The baseline's own slugs (000-bootstrap,
+  //     001-encore-app-architecture) differ from factory-encore's meta-spec
+  //     slugs, so the drop set never removes a carried app spec. The meta set
+  //     covers the full 000-007 corpus; 000/006/007 are seeded here to guard
+  //     that they drop. ---
+  writeFile(root, 'specs/000-bootstrap/spec.md', '# 000 baseline bootstrap\n')
   writeFile(root, 'specs/001-encore-app-architecture/spec.md', '# 001 app architecture\n')
   writeFile(root, 'specs/002-security-data-invariants/spec.md', '# 002 security/data\n')
+  writeFile(root, 'specs/000-factory-kernel/spec.md', '# 000 generator meta (kernel)\n')
   writeFile(root, 'specs/002-encore-generator-core/spec.md', '# 002 generator meta\n')
   writeFile(root, 'specs/005-architecture-doc-governance/spec.md', '# 005 generator meta\n')
+  writeFile(root, 'specs/006-factory-schema-lockstep/spec.md', '# 006 generator meta\n')
+  writeFile(root, 'specs/007-generator-e2e-harness/spec.md', '# 007 generator meta\n')
 
   // --- generator artifacts (skipped) ---
   writeFile(root, 'scripts/setup-app.ts', "console.log('generator')\n")

@@ -15,12 +15,15 @@ depends_on: ["002-encore-generator-core"]
 code_aliases: ["DOC_GOVERNANCE"]
 summary: >
   Human-facing architecture documentation is a derived view of the owning
-  specs: CODEMAP.md, the orchestration/ guides, and the codemap/readme
-  generators are mechanically coupled (an edit requires touching this
-  spec); docs/ and README.md sit inside the coupling gate's built-in bypass
-  floor, so their fidelity is enforced editorially — each doc names the
-  spec(s) it derives from, and a doc change that contradicts an owning spec
-  is a review-blocking defect.
+  specs. factory-encore owns the codemap/readme generators
+  (`scripts/codemaps/`, `scripts/readmes/`) and the `orchestration/` guides;
+  these are mechanically coupled (an edit requires touching this spec). The
+  `CODEMAP.md` those generators emit is a born-with product artifact, carried
+  into the produced app and governed there, not established here. `docs/` and
+  `README.md` sit inside the coupling gate's built-in bypass floor, so their
+  fidelity is enforced editorially: each doc names the spec(s) it derives
+  from, and a doc change that contradicts an owning spec is a review-blocking
+  defect.
 # CODEMAP.md is a product artifact (born-with the produced app), so it is no
 # longer established here; factory-encore owns the codemap/readme GENERATORS
 # that emit it, plus the create-time orchestration guides.
@@ -46,10 +49,16 @@ possible.
 
 ## 2. Territory
 
-This spec owns `CODEMAP.md`, `orchestration/`, `scripts/codemaps/`, and
-`scripts/readmes/`. These paths are within the coupling gate's claimed surface,
-so a change to any of them without a corresponding touch to this spec causes
-`npx spec-spine couple --base origin/main` to exit non-zero.
+This spec owns the `orchestration/` guides and the codemap/readme generators
+(`scripts/codemaps/`, `scripts/readmes/`). These paths are within the coupling
+gate's claimed surface, so a change to any of them without a corresponding touch
+to this spec causes `npx spec-spine couple --base origin/main` to exit non-zero.
+
+`CODEMAP.md` is **not** owned here. It is a born-with product artifact: the
+`scripts/codemaps/` generator emits it into the produced app, where it is
+governed against that app's `encore-app-architecture`. factory-encore governs
+the generator that emits it, not the emitted file (which does not exist in this
+repository).
 
 `docs/` and `README.md` sit inside the coupling gate's **built-in bypass
 floor**. The gate exempts these paths by design; they are not and cannot be
@@ -61,15 +70,17 @@ spec is a review-blocking defect adjudicated by human reviewers.
 
 ### 3.1 Mechanically coupled surfaces
 
-**FR-01**: `CODEMAP.md` MUST be kept current with the Encore service
-decomposition defined by spec `encore-app-architecture`. It MUST describe
+**FR-01**: The codemap generator (`scripts/codemaps/`) MUST emit a `CODEMAP.md`
+that reflects the Encore service decomposition defined by the baseline's
+`encore-app-architecture` invariant (pinned via spec `006-factory-schema-lockstep`):
 the six services (`lib`, `db`, `health`, `auth`, `gateway`, `web`), the
-`SQLDatabase("app")`, port 4000, and the generator script layout. Any change
-to the service layout in spec `encore-app-architecture` MUST be reflected
-in `CODEMAP.md` in the same diff.
+`SQLDatabase("app")`, port 4000, and the generator script layout. Because the
+generator is an `establishes` path, any change to the emitted service layout MUST
+touch this spec in the same diff. The emitted `CODEMAP.md` itself is governed in
+the produced app, not here.
 
 **FR-02**: `orchestration/` contains the template orchestrator guide and the
-the per-step skill bodies. These documents MUST describe the Encore compile-time
+per-step skill bodies. These documents MUST describe the Encore compile-time
 service-composition model (copy-base + select auth driver + compose modules +
 merge config). They MUST NOT describe any runtime-registry, middleware-chain,
 or dynamic loader model. The generator pipeline described by spec
@@ -82,10 +93,11 @@ service graph and the two-app dual model (spec `004-dual-app-generator`). A
 change to the profile structure MUST be reflected in these directories in the
 same diff.
 
-**FR-04**: Because `CODEMAP.md`, `orchestration/`, `scripts/codemaps/`, and
-`scripts/readmes/` are all `establishes` paths of this spec, the coupling gate
-requires any PR that edits these surfaces to also touch this spec. This is the
-mechanical lock against silent drift.
+**FR-04**: Because `orchestration/`, `scripts/codemaps/`, and `scripts/readmes/`
+are `establishes` paths of this spec, the coupling gate requires any PR that
+edits these surfaces to also touch this spec. This is the mechanical lock
+against silent drift. `CODEMAP.md` is not an `establishes` path: it is the
+born-with output of `scripts/codemaps/`, governed in the produced app.
 
 ### 3.2 Editorially governed surfaces
 
@@ -105,20 +117,18 @@ spec `002-encore-generator-core` are review-blocking defects.
 **FR-08**: The editorial governance contract applies to the following `docs/`
 documents and their owning specs:
 
-| Document | Owning spec(s) |
-|----------|----------------|
-| `docs/DEVELOPMENT.md` | `encore-app-architecture`, `multi-driver-auth-service` |
-| `docs/AUTH-SETUP.md` | `multi-driver-auth-service` |
-| `docs/DEPLOYMENT.md` | `encore-ci-cd`, `azure-webapp-deploy` |
-| `docs/TROUBLESHOOTING.md` | `encore-app-architecture`, `multi-driver-auth-service` |
-| `docs/TESTING.md` | `encore-app-architecture` |
-| `docs/TEMPLATE-USER-GUIDE.md` | `002-encore-generator-core`, `001-module-manifest-schema` |
-| `docs/MODULARIZATION-OVERVIEW.md` | `001-module-manifest-schema`, `002-encore-generator-core` |
-| `docs/MODULARIZATION-SPEC.md` | `001-module-manifest-schema` |
-| `docs/MODULE-DEVELOPMENT-GUIDE.md` | `001-module-manifest-schema`, `003-user-management-module` |
-| `docs/DUAL-APP-GUIDE.md` | `004-dual-app-generator` |
-| `docs/encore-ts/` | `encore-app-architecture` (provenance: these documents describe paths in the source substrate, not this template's `apps/api`; read as decision-record, not as a description of this tree) |
-| `README.md` | `encore-app-architecture`, `002-encore-generator-core` |
+| Document | Owning spec(s) / source |
+|----------|-------------------------|
+| `docs/architecture.md` | the three-layer factory model (`process/`, `contract/`) and `002-encore-generator-core` (the adapter's create-time generator) |
+| `docs/how-to.md` | `002-encore-generator-core`, `004-dual-app-generator` (running the generator) |
+| `docs/oap-integration.md` | the OAP contract mirror under `contract/`; `000-factory-kernel` for the governance surface |
+| `README.md` | `000-factory-kernel`, `002-encore-generator-core` |
+
+The `docs/` tree here is the framework's own documentation. The produced-app
+document set (`DEVELOPMENT.md`, `AUTH-SETUP.md`, `DEPLOYMENT.md`, and the rest)
+is authored and governed in the produced app against its own spec corpus, not
+here; the codemap/readme generators (`scripts/readmes/`) seed the produced app's
+starting docs.
 
 ### 3.3 Coupling gate geometry
 
@@ -128,22 +138,24 @@ design choice in the gate's implementation, not a gap in this spec's
 governance. The editorial contract in FR-05 through FR-08 is the governance
 instrument for these paths; it is enforced by reviewers, not by the gate.
 
-The mechanically coupled paths (`CODEMAP.md`, `orchestration/`,
-`scripts/codemaps/`, `scripts/readmes/`) are above the bypass floor and are
-fully gate-coupled. The split between the two mechanisms is an architectural
-fact, not a limitation to be closed.
+The mechanically coupled paths (`orchestration/`, `scripts/codemaps/`,
+`scripts/readmes/`) are above the bypass floor and are fully gate-coupled. The
+split between the two mechanisms is an architectural fact, not a limitation to
+be closed.
 
 ## 4. Acceptance criteria
 
-- **AC-1:** `CODEMAP.md` exists and describes the Encore service decomposition
-  matching spec `encore-app-architecture`: six services, `SQLDatabase("app")`,
-  port 4000, and the generator script layout.
+- **AC-1:** The `scripts/codemaps/` generator emits a `CODEMAP.md` describing the
+  Encore service decomposition matching the pinned `encore-app-architecture`: six
+  services, `SQLDatabase("app")`, port 4000, and the generator script layout. (The
+  emitted file is born-with the produced app; it does not exist in this
+  repository.)
 - **AC-2:** Every file in `orchestration/` describes the Encore compile-time
   composition model. A search for runtime-session or dynamic-registry keywords
   across `orchestration/` returns zero matches.
 - **AC-3:** `npx spec-spine couple --base origin/main` exits 0 when
-  `CODEMAP.md`, `orchestration/`, `scripts/codemaps/`, and `scripts/readmes/`
-  change only in a diff that also touches this spec.
+  `orchestration/`, `scripts/codemaps/`, and `scripts/readmes/` change only in a
+  diff that also touches this spec.
 - **AC-4:** At least one document in `docs/` names its owning spec in its
   header or introduction.
 - **AC-5:** `npx spec-spine compile` and `npx spec-spine lint --fail-on-warn`

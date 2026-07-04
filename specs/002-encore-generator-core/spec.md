@@ -26,9 +26,13 @@ establishes:
   - "adapters/acme-vue-encore/scripts/setup-app.ts"
   - "adapters/acme-vue-encore/scripts/add-module.ts"
   - "adapters/acme-vue-encore/scripts/remove-module.ts"
+  - "adapters/acme-vue-encore/scripts/validate-modules.ts"
   - "adapters/acme-vue-encore/scripts/lib/env-merger.ts"
   - "adapters/acme-vue-encore/scripts/lib/encore-composer.ts"
   - "adapters/acme-vue-encore/scripts/lib/born-with.ts"
+  - "adapters/acme-vue-encore/scripts/lib/template-json.ts"
+  - "adapters/acme-vue-encore/scripts/lib/install-module.ts"
+  - "adapters/acme-vue-encore/scripts/lib/adapter-manifest.ts"
 ---
 
 # 002. Encore generator core: copy-base + select-driver + merge-config
@@ -51,9 +55,14 @@ engine for all three.
 
 ## 2. Territory
 
-This spec owns the five generator files listed in `establishes`. The module
-manifests consumed by the generator are owned by spec 001. The base Encore
-app being copied is owned by the `encore-app-architecture` spec. Auth drivers
+This spec owns the ten generator files listed in `establishes`: the `setup-app`,
+`add-module`, `remove-module`, and `validate-modules` CLIs, plus the
+generator-core libraries under `scripts/lib/` (`encore-composer`, `env-merger`,
+`born-with`, `template-json` for the `template.json` state, `install-module` for
+the install engine, and `adapter-manifest` for the profile-to-module authority).
+The module manifests consumed by the generator are owned by spec 001. The base
+Encore app being copied is owned by the `encore-app-architecture` spec. Auth
+drivers
 are owned by the `multi-driver-auth-service` spec. The dual-app generator that
 runs `setup-app` twice is owned by spec 004.
 
@@ -261,7 +270,7 @@ all three `setup-app` profiles, and the incremental `add-module` /
 
 **AC-5.** `npx spec-spine compile` exits 0; `npx spec-spine lint
 --fail-on-warn` exits 0; `npx spec-spine couple --base origin/main` exits
-0 for all five files owned here.
+0 for all ten files owned here.
 
 ## 5. Out of scope
 
