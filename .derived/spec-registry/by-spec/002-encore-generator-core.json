@@ -88,6 +88,6 @@
     "summary": "The app generator: setup-app.ts scaffolds a new application by copying the base Encore app, selecting an auth driver by configuration, composing selected service modules (directory copy + declarative merge via encore-composer.ts, including a JSONC-aware CORS merge), merging env templates, and regenerating the typed client. add-module.ts / remove-module.ts apply the same composition incrementally. Three profiles: minimal, public, internal.\n",
     "title": "Encore generator core: copy-base + select-driver + merge-config"
   },
-  "shardHash": "401b4b3afdc5d452731a856af0c495a2ceda881560ab9ef04d389a59f6a9820c",
+  "shardHash": "c0acef5ea42c9501b19f60338ad809a294c1fb2cc0f4092529ad1bd8e2a05668",
   "specVersion": "1.1.0"
 }

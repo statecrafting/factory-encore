@@ -72,7 +72,7 @@ All code added to this application **must** use these technologies. Do not intro
 | **Styling** | PrimeVue | `primevue` + `@primevue/themes` (Aura preset, indigo primary); component-scoped CSS. No Tailwind. |
 | **Backend** | **Encore.ts** | Typed `api()` / `api.raw()` endpoints; services discovered from `encore.service.ts`; `authHandler` + `Gateway`; service `middlewares` arrays. |
 | **Auth** | **Stateless RS256 JWT + rauthy OIDC** | Access (~15 min) + DB-backed refresh (~7 day, rotation/revocation) in httpOnly cookies; CSRF double-submit. `AUTH_DRIVER=rauthy` for this profile. Not `express-session`. |
-| **Persistence** | **Postgres via `SQLDatabase("app")`** | Tagged-template queries only. Redis is optional, for rate-limit backing only (`REDIS_URL`). |
+| **Persistence** | **Postgres via `SQLDatabase("app")`** | Tagged-template queries only. Rate limiting is Postgres-native (UNLOGGED counter, per INV-6); no Redis. |
 | **Build** | Vite (frontend); `encore build docker` (backend) | `encore run --port=4000` for local dev. |
 | **Testing** | Vitest (unit), Playwright (E2E) | `encore check` validates backend graph/topology/types. |
 | **Linting** | ESLint 9 + Prettier | Flat config format. |
@@ -342,8 +342,8 @@ If user-management module is installed, its migration is added to db/migrations/
 Query contract: tagged templates only: db.query`... WHERE id = ${id}` (never string concatenation).
 ```
 
-Redis is **not** a session store. `REDIS_URL`, when set, only swaps the in-memory rate-limit backend
-(`lib/rate-limit.ts`) for a Redis-backed one.
+Rate limiting is Postgres-native (`lib/rate-limit.ts`): an UNLOGGED `rate_limit_counter`
+table in `SQLDatabase("app")`, per INV-6. There is no Redis and no session store.
 
 ---
 
@@ -417,7 +417,7 @@ if (hasRole('admin')) { /* show admin UI */ }
 1. **Standalone Encore backend**: one Encore app at `apps/api`, excluded from npm workspaces, self-contained.
 2. **Multi-driver auth**: `rauthy` is the production driver (`AUTH_DRIVER=rauthy`); `mock` is available for dev.
 3. **Stateless JWT, not sessions**: RS256 access + DB-backed refresh rotation in httpOnly cookies. No `express-session`.
-4. **Postgres via `SQLDatabase`**: `user_account` / `refresh_token` / `audit_log`. Tagged-template queries only. Redis is rate-limit-only.
+4. **Postgres via `SQLDatabase`**: `user_account` / `refresh_token` / `audit_log`. Tagged-template queries only. Rate limiting is Postgres-native (no Redis).
 5. **BFF pattern**: `gateway` proxies `/api/v1/data/*` to the private backend with S2S OAuth tokens, traversal sanitisation, 5xx masking, audit.
 6. **PII never logged**: `lib/logger.ts` redacts; `LOG_PII=false` in production or the app fails fast.
 7. **PrimeVue UI**: all SPA UI uses PrimeVue components (Aura theme preset, registered in `main.ts`).

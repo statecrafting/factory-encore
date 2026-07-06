@@ -122,7 +122,8 @@ deleted during generation.
 | `internal` | `rauthy` | `RAUTHY_*` (+ `GATEWAY_OAUTH_*` when BFF is included) | Staff-facing application |
 
 `SQLDatabase("app")` (the `db` service, the `encore-app-architecture` spec) is always present in
-every profile. Redis is optional, rate-limit backing only (`REDIS_URL`).
+every profile. Rate limiting is Postgres-native (an UNLOGGED counter table in
+`SQLDatabase("app")`, per INV-6); there is no Redis.
 There is no session-store axis.
 
 #### FR-004 — Compose service modules

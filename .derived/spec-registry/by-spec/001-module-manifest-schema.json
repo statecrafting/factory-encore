@@ -26,10 +26,6 @@
       {
         "kind": "file",
         "path": "adapters/acme-vue-encore/modules/data-postgres/"
-      },
-      {
-        "kind": "file",
-        "path": "adapters/acme-vue-encore/modules/data-redis/"
       }
     ],
     "id": "001-module-manifest-schema",
@@ -56,9 +52,9 @@
     ],
     "specPath": "specs/001-module-manifest-schema/spec.md",
     "status": "approved",
-    "summary": "The module manifest schema: every module under modules/ declares its composition declaratively — services, secrets, corsEntries, middlewares, migrations — consumed by the generator at compose time. Service modules additionally ship an Encore service directory under files/. The four cross-cutting modules (security-core, api-gateway, data-postgres, data-redis) are pure declarative payloads with no copied source files.\n",
+    "summary": "The module manifest schema: every module under modules/ declares its composition declaratively — services, secrets, corsEntries, middlewares, migrations — consumed by the generator at compose time. Service modules additionally ship an Encore service directory under files/. The three cross-cutting modules (security-core, api-gateway, data-postgres) are pure declarative payloads with no copied source files.\n",
     "title": "Module manifest schema: declarative service composition and the module taxonomy"
   },
-  "shardHash": "6bafa3a5b474349220a246a082ee9fe181dab51f3825ea9df8bf941db46a11f0",
+  "shardHash": "3008eda0802ee8a6f6c042e89aa0b6958175370586fdbba4f31553afb91f29a4",
   "specVersion": "1.1.0"
 }

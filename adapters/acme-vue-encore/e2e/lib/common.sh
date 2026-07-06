@@ -33,9 +33,9 @@ APPS_DIR="$OUT_DIR/apps"
 LOG_DIR="$OUT_DIR/logs"
 RESULTS_TSV="$OUT_DIR/results.tsv"
 
-# The five opt-in modules, in dependency-respecting INSTALL_ORDER (this is the
+# The four opt-in modules, in dependency-respecting INSTALL_ORDER (this is the
 # exact order stagecraft's moduleCatalog.ts::INSTALL_ORDER applies).
-INSTALL_ORDER=(security-core data-postgres data-redis api-gateway user-management)
+INSTALL_ORDER=(security-core data-postgres api-gateway user-management)
 
 # The four stagecraft prebuild profiles (templateCache.ts::PROFILE_SPECS).
 PROFILES=(minimal public internal dual)

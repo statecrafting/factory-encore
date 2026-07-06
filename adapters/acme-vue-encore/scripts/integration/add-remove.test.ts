@@ -6,11 +6,11 @@
  *
  * The auth-* / service-auth modules and the @template/auth barrel generator
  * were retired in spec 003 (auth-driver selection is configuration over the
- * in-app drivers, not file-copy modules). The four surviving cross-cutting
- * modules (security-core, api-gateway, data-postgres, data-redis) were
+ * in-app drivers, not file-copy modules). The three surviving cross-cutting
+ * modules (security-core, api-gateway, data-postgres) were
  * converted to thin declarative overlays in spec 001 (no apps/api/src/**
  * payloads; their backend function is in the base app's lib/db/gateway), so
- * security-core/data-* own no files and api-gateway contributes only its
+ * security-core/data-postgres own no files and api-gateway contributes only its
  * frontend connectivity view. Service composition is exercised via the
  * `widget` fixture and the real `user-management` Encore service module.
  */
@@ -397,13 +397,13 @@ describe('remove-module workflow', () => {
   })
 
   it('comments out env vars in .env.example on removal', () => {
-    simulateAddModule(tmpDir, 'data-redis')
+    simulateAddModule(tmpDir, 'security-core')
     let content = fs.readFileSync(path.join(tmpDir, '.env.example'), 'utf-8')
-    expect(content).toContain('REDIS_URL')
+    expect(content).toContain('CORS_ORIGIN')
 
-    simulateRemoveModule(tmpDir, 'data-redis')
+    simulateRemoveModule(tmpDir, 'security-core')
     content = fs.readFileSync(path.join(tmpDir, '.env.example'), 'utf-8')
-    expect(content).toContain('(removed with data-redis)')
+    expect(content).toContain('(removed with security-core)')
   })
 
   it('rejects removing a module with reverse dependencies (api-gateway requires security-core)', () => {
@@ -426,7 +426,7 @@ describe('remove-module workflow', () => {
   })
 
   it('throws when removing module that is not installed', () => {
-    expect(() => simulateRemoveModule(tmpDir, 'data-redis')).toThrow(/not installed/)
+    expect(() => simulateRemoveModule(tmpDir, 'data-postgres')).toThrow(/not installed/)
   })
 })
 
@@ -452,8 +452,7 @@ describe('dependency validation', () => {
     expect(isModuleInstalled(state, 'api-gateway')).toBe(true)
   })
 
-  it('data modules install with no dependencies', () => {
+  it('the data-postgres module installs with no dependencies', () => {
     expect(isModuleInstalled(simulateAddModule(tmpDir, 'data-postgres'), 'data-postgres')).toBe(true)
-    expect(isModuleInstalled(simulateAddModule(tmpDir, 'data-redis'), 'data-redis')).toBe(true)
   })
 })

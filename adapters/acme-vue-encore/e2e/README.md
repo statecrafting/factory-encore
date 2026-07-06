@@ -20,7 +20,7 @@ It mirrors the three stagecraft scaffold steps:
 |---|---|
 | Prebuild four profiles (`ensurePrebuilts`) | runs `setup-app.ts --profile {minimal,public,internal}` and `setup-dual-app.ts`, all with `--source <template-encore> --dest ... --yes` under `NO_INSTALL=true` |
 | Compose selected modules (`scaffoldFromPrebuilt`) | copies the prebuilt tree (minus `.git`/`node_modules`), runs `add-module.ts <mod> --yes --no-install --root <dest>` per extra, in `INSTALL_ORDER` |
-| Module catalog + ordering (`moduleCatalog`) | the five modules and the exact `INSTALL_ORDER` (security-core, data-postgres, data-redis, api-gateway, user-management); dual takes no extras |
+| Module catalog + ordering (`moduleCatalog`) | the four modules and the exact `INSTALL_ORDER` (security-core, data-postgres, api-gateway, user-management); dual takes no extras |
 
 ## Profiles and modules
 
@@ -32,14 +32,14 @@ Profiles (from the adapter manifest `scaffold.profiles`):
 - `dual`     -> `setup-dual-app.ts` (independent `public/` + `internal/` Encore apps)
 
 Modules (composed onto the single-app profiles): `security-core`,
-`data-postgres`, `data-redis`, `api-gateway` (requires `security-core`),
+`data-postgres`, `api-gateway` (requires `security-core`),
 `user-management`.
 
 ## The matrix
 
 For each single-app profile (minimal/public/internal): the base app (no
 modules), each module on its own, and all modules together. For dual: the
-two-app topology with no extras. That is `3 * (1 + 5 + 1) + 1 = 22` produced
+two-app topology with no extras. That is `3 * (1 + 4 + 1) + 1 = 19` produced
 apps.
 
 ## Verification

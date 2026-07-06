@@ -150,7 +150,7 @@ Use when the public stack does not need to proxy to a private backend.
 
 ---
 
-### Pattern G: Remove a Declarative Module (security-core, data-postgres, data-redis)
+### Pattern G: Remove a Declarative Module (security-core, data-postgres)
 
 These modules are thin declarative overlays on the base Encore app (no `apps/api/src/**` files). Removing them means:
 

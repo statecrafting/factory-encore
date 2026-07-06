@@ -1,0 +1,60 @@
+{
+  "record": {
+    "codeAliases": [
+      "REFRESH_KERNEL"
+    ],
+    "created": "2026-07-05",
+    "dependsOn": [
+      "002-encore-generator-core",
+      "004-dual-app-generator",
+      "006-factory-schema-lockstep"
+    ],
+    "domain": "generator",
+    "establishes": [
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/refresh-kernel.ts"
+      },
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/lib/three-way-merge.ts"
+      },
+      {
+        "kind": "file",
+        "path": "adapters/acme-vue-encore/scripts/refresh-kernel.test.ts"
+      }
+    ],
+    "id": "008-refresh-kernel-command",
+    "implementation": "pending",
+    "kind": "feature",
+    "owner": "bart",
+    "risk": "medium",
+    "sectionHeadings": [
+      "008: refresh-kernel, in-place ref-aware 3-way kernel refresh",
+      "1. Purpose",
+      "2. Territory",
+      "3. Behavior",
+      "FR-001: Born-with provenance record",
+      "FR-002: Legacy fallback, fail-visible",
+      "FR-003: Target ref selection",
+      "FR-004: Baseline tree materialization",
+      "FR-005: Per-file 3-way classification",
+      "FR-006: Content merge and conflict surfacing",
+      "FR-007: Module-owned files are out of scope",
+      "FR-008: App-authored files are preserved",
+      "FR-009: Module-catalog reconciliation",
+      "FR-010: Dual-topology awareness",
+      "FR-011: Dry-run and clean-tree guard",
+      "FR-012: Idempotence and pin advance",
+      "FR-013: Fail-visible reporting",
+      "4. Acceptance criteria",
+      "5. Out of scope"
+    ],
+    "specPath": "specs/008-refresh-kernel-command/spec.md",
+    "status": "draft",
+    "summary": "setup-app refuses a non-empty destination (setup-app.ts:365-371), so a generated product cannot inherit baseline improvements after birth: the only in-place mutators are the per-module add/remove-module scripts, and nothing updates baseline-owned files in an existing tree. lockstep (spec 006) detects baseline drift but applies nothing. refresh-kernel closes that gap with an in-place, ref-aware 3-way merge (base = the ref the app was born at, ours = the current tree, theirs = the target baseline ref) scoped to baseline-owned files, preserving app-authored and module-owned files and surfacing conflicts rather than overwriting. It also reconciles the module catalog when a born-with module (the retired data-redis marker is the worked example) has been removed upstream. This makes the born-with baseline a living dependency instead of a one-time scaffold.\n",
+    "title": "refresh-kernel: in-place, ref-aware 3-way kernel refresh for generated products"
+  },
+  "shardHash": "c5583264380b7faea85456e6545ab84a449987c43afa16db566a718cfc8b8e1e",
+  "specVersion": "1.1.0"
+}

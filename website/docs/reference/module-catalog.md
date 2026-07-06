@@ -9,7 +9,6 @@ The module catalog (`adapters/acme-vue-encore/modules/`) contains composable ser
 | `security-core` | 2.0.0 | stable | Cross-cutting security configuration. Documents the CORS origin knob the base app's `encore.app` global_cors consumes. |
 | `api-gateway` | 2.0.0 | stable | BFF API gateway opt-in. Documents private-backend config knobs and contributes the frontend `/connectivity` test page. |
 | `data-postgres` | 2.0.0 | stable | Declarative marker that PostgreSQL persistence is built into the base via Encore's `SQLDatabase("app")`. |
-| `data-redis` | 2.0.0 | stable | Documents the `REDIS_URL` knob for optional rate-limit backend (not a session store). |
 | `user-management` | 2.0.0 | stable | Application-side user + role management as an Encore service. The reference shape for feature modules. |
 
 ## Module taxonomy
@@ -23,7 +22,6 @@ These modules ship no `apps/api/src/**` payload. They are declarative markers do
 - **security-core**: CORS origin configuration (`CORS_ORIGIN` env var).
 - **api-gateway**: BFF proxy configuration (OAuth client secrets already declared by the base).
 - **data-postgres**: PostgreSQL via Encore's `SQLDatabase("app")`.
-- **data-redis**: Optional Redis for rate limiting (`REDIS_URL` env var).
 
 ### Service modules (files + declarations)
 
@@ -72,7 +70,6 @@ graph TD
     AG["api-gateway"] --> SC["security-core"]
     UM["user-management"]
     DP["data-postgres"]
-    DR["data-redis"]
 ```
 
 Only `api-gateway` declares a hard dependency (`requires: ["security-core"]`). All other modules are independent.

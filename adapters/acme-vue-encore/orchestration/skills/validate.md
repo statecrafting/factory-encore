@@ -266,7 +266,7 @@ Verify these manually by searching/reading relevant files:
 | `<script setup>` in Vue | New `.vue` files use `<script setup lang="ts">`, not Options API |
 | Tagged-template queries only | Search `pool.query(\s*\`\|db.query(\s*\`` vs string-concatenated SQL: should find no concatenation |
 | Stateless JWT, no sessions | No `express-session`, no `req.session`, no `connect-redis`, no `connect-pg-simple` |
-| Redis is rate-limit only | `REDIS_URL` used only in `lib/rate-limit.ts`: not as a session store |
+| Rate limiting is Postgres-native | `lib/rate-limit.ts` uses an UNLOGGED counter in `SQLDatabase("app")`; no Redis, `REDIS_URL` is not read |
 | Port 4000 | `apps/api/.env.example` sets `PORT=4000`; Vite proxy targets `localhost:4000` |
 | Encore error shape | Pinia stores read `e.response?.data?.message` (Encore `{ code, message, details }`): not `e.response?.data?.error?.message` (Express envelope) |
 

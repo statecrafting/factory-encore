@@ -247,7 +247,7 @@ Update `apps/api/encore.app` CORS origins for the production deployment:
 
 > **Do NOT combine both public and internal frontend URLs in a single app's `global_cors`** (dual variant). Each Encore app allows only its own frontend. This enforces the external user/staff trust-zone boundary.
 
-Redis (`REDIS_URL`) is an optional rate-limit backend (not a session store). If Redis is configured, Encore uses it for the `apiRateLimit` middleware; if not, the in-memory rate-limit backend is used.
+Rate limiting is Postgres-native: the `apiRateLimit` middleware uses an UNLOGGED `rate_limit_counter` table in `SQLDatabase("app")` (per INV-6). There is no `REDIS_URL` and no Redis in this stack.
 
 ---
 

@@ -49,6 +49,6 @@
     "summary": "The generator clones the template-encore lean baseline, so it must not drift from the app invariants frozen there (`encore-app-architecture`, `security-data-invariants`) nor from the baseline's core-service and module-catalog shape. This spec stands up a cross-repo lockstep: a committed lockfile pins the upstream ref, the baseline core services, and the module catalog membership; a fail-visible CI gate fetches the baseline at the pinned ref and refuses any drift. The invariant-hash pin was DEFERRED through Phase 1 and Phase 2 (`encore-app-architecture` absorbed the static-serving wiring from spec 004 in Phase 2) and is now ACTIVE: the Phase 3 handshake flipped the pin to \"pinned\", filled the invariant spec.md hashes, and bumped pinnedRef to the finalized template-encore main, so a re-hash mismatch on either invariant now fails the gate. Mirrors the OAP `factory-schema-lockstep` pattern.\n",
     "title": "Generator/baseline lockstep: pin the generator to template-encore's frozen invariants"
   },
-  "shardHash": "2a8e71a784cb74d8880ef900eb5eee73821f0c9789c30064b3ca8541ccc53467",
+  "shardHash": "a2ed6557e34ec9832b3e9f971b0c5c8a57d2d03aa83a20499de4fed05a58d545",
   "specVersion": "1.1.0"
 }

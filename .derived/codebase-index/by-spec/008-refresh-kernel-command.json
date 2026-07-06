@@ -1,0 +1,63 @@
+{
+  "diagnostics": {
+    "errors": [],
+    "warnings": [
+      {
+        "code": "W-001",
+        "message": "spec '008-refresh-kernel-command' file unit 'adapters/acme-vue-encore/scripts/refresh-kernel.ts' does not exist",
+        "path": "adapters/acme-vue-encore/scripts/refresh-kernel.ts"
+      },
+      {
+        "code": "W-001",
+        "message": "spec '008-refresh-kernel-command' file unit 'adapters/acme-vue-encore/scripts/lib/three-way-merge.ts' does not exist",
+        "path": "adapters/acme-vue-encore/scripts/lib/three-way-merge.ts"
+      },
+      {
+        "code": "W-001",
+        "message": "spec '008-refresh-kernel-command' file unit 'adapters/acme-vue-encore/scripts/refresh-kernel.test.ts' does not exist",
+        "path": "adapters/acme-vue-encore/scripts/refresh-kernel.test.ts"
+      }
+    ]
+  },
+  "mapping": {
+    "dependsOn": [
+      "002-encore-generator-core",
+      "004-dual-app-generator",
+      "006-factory-schema-lockstep"
+    ],
+    "implementingPaths": [],
+    "resolvedUnits": [
+      {
+        "locations": [],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/lib/three-way-merge.ts"
+        }
+      },
+      {
+        "locations": [],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/refresh-kernel.test.ts"
+        }
+      },
+      {
+        "locations": [],
+        "ownership": true,
+        "sourceField": "establishes",
+        "unit": {
+          "kind": "file",
+          "path": "adapters/acme-vue-encore/scripts/refresh-kernel.ts"
+        }
+      }
+    ],
+    "specId": "008-refresh-kernel-command",
+    "specStatus": "draft"
+  },
+  "schemaVersion": "1.1.0",
+  "shardHash": "c842740ca32c042b578cd1d01accfffe4f055106a26d6ba7d6076ee051a14ad5"
+}

@@ -8,11 +8,12 @@
  * library functions.
  *
  * The auth-* / service-auth modules were retired in spec 003, so these tests
- * drive the surviving modules (security-core, api-gateway, data-redis). Those
+ * drive the surviving modules (security-core, api-gateway, data-postgres). Those
  * cross-cutting modules were converted to thin declarative overlays in spec
- * 063 (no apps/api/src/** payloads): security-core / data-redis own no files
- * (they contribute env knobs only), and api-gateway carries the single file
- * payload among them — its frontend /connectivity view — so file-copy and
+ * 063 (no apps/api/src/** payloads): security-core contributes an env knob
+ * (CORS_ORIGIN) and data-postgres is a pure marker (both own no files), and
+ * api-gateway carries the single file payload among them (its frontend
+ * /connectivity view), so file-copy and
  * fileOwnership-mismatch coverage is driven through api-gateway. The Express
  * backend modules.ts regeneration and the conflict/requiresOneOf end-to-end
  * cases are gone: Encore discovers services from the filesystem (no backend
@@ -279,7 +280,7 @@ describe('remove-module.ts — error cases', () => {
   })
 
   it('exits 1 when module is not installed', () => {
-    const result = remove(sandbox, 'data-redis')
+    const result = remove(sandbox, 'data-postgres')
     expect(result.exitCode).toBe(1)
     expect(result.stderr).toMatch(/not installed|Error/i)
   })
@@ -305,7 +306,7 @@ describe('validate-modules.ts', () => {
   beforeAll(() => {
     sandbox = createSandbox('validate')
     add(sandbox, 'api-gateway') // brings security-core (dep) and owns the connectivity view
-    add(sandbox, 'data-redis')
+    add(sandbox, 'data-postgres')
   })
 
   afterAll(() => {

@@ -67,7 +67,7 @@ All code added to either application **must** use these technologies.
 | **Backend** | **Encore.ts** | Typed `api()` / `api.raw()` endpoints; services discovered from `encore.service.ts`; `authHandler` + `Gateway`; service `middlewares` arrays. |
 | **Auth (public)** | **Stateless RS256 JWT + rauthy OIDC** | `AUTH_DRIVER=rauthy`; access + DB-backed refresh in httpOnly cookies. Not `express-session`. |
 | **Auth (internal)** | **Stateless RS256 JWT + rauthy OIDC** | `AUTH_DRIVER=rauthy`; same JWT mechanism; separate rauthy registration. |
-| **Persistence** | **Postgres via `SQLDatabase("app")`** | Tagged-template queries only. Redis is optional, rate-limit backing only. |
+| **Persistence** | **Postgres via `SQLDatabase("app")`** | Tagged-template queries only. Rate limiting is Postgres-native (UNLOGGED counter, per INV-6); no Redis. |
 | **Build** | Vite (frontend); `encore build docker` (backend) | `encore run --port=4000` for local dev of either app. |
 | **Testing** | Vitest (unit), Playwright (E2E) | `encore check` validates each backend graph independently. |
 | **Linting** | ESLint 9 + Prettier | Flat config format. |
@@ -304,7 +304,7 @@ Additional (internal app, user-management module):
 Query contract: tagged templates only (never string concatenation).
 ```
 
-Redis is **not** a session store in either app. `REDIS_URL` enables Redis-backed rate limiting only.
+Rate limiting is Postgres-native: an UNLOGGED `rate_limit_counter` table in each app's `SQLDatabase("app")`, per INV-6. There is no Redis and no session store in either app.
 
 ---
 
@@ -369,7 +369,7 @@ export const listCases = api(
 1. **Two independent Encore apps**: `public/` and `internal/` are fully standalone; each boots, deploys, and scales independently. There is no shared Express server, no shared session store between them, and no in-repo S2S coupling at the template level.
 2. **Trust-zone separation**: separate rauthy registrations (one per app), different JWT key pairs, different `infra.config.json`, different network exposure boundaries.
 3. **Stateless JWT, not sessions**: RS256 access + DB-backed refresh rotation in httpOnly cookies (both apps). No `express-session`.
-4. **Postgres via `SQLDatabase`**: each app has its own `SQLDatabase("app")`; tagged-template queries only; Redis is rate-limit-only.
+4. **Postgres via `SQLDatabase`**: each app has its own `SQLDatabase("app")`; tagged-template queries only; rate limiting is Postgres-native (no Redis).
 5. **BFF pattern**: each app's `gateway` service proxies `/api/v1/data/*` with S2S OAuth tokens and traversal sanitisation.
 6. **PII never logged**: `lib/logger.ts` redacts in both apps; `LOG_PII=false` in production.
 7. **PrimeVue UI**: all SPA UI in both apps uses PrimeVue components (Aura theme preset, registered in `main.ts`).

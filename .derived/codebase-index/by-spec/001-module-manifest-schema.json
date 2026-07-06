@@ -10,10 +10,6 @@
         "source": "spec-edge"
       },
       {
-        "path": "adapters/acme-vue-encore/modules/data-redis/",
-        "source": "spec-edge"
-      },
-      {
         "path": "adapters/acme-vue-encore/modules/security-core/",
         "source": "spec-edge"
       },
@@ -51,19 +47,6 @@
         "unit": {
           "kind": "file",
           "path": "adapters/acme-vue-encore/modules/data-postgres/"
-        }
-      },
-      {
-        "locations": [
-          {
-            "file": "adapters/acme-vue-encore/modules/data-redis/"
-          }
-        ],
-        "ownership": true,
-        "sourceField": "establishes",
-        "unit": {
-          "kind": "file",
-          "path": "adapters/acme-vue-encore/modules/data-redis/"
         }
       },
       {
@@ -110,5 +93,5 @@
     "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "b23f2c660c1aaff8e6ef252e6262dd21903379bf2c91aff37eeff2bf4ed0658b"
+  "shardHash": "11b5b45a95b408fc0ae255f902e1a23371a1a721c0ff318ab99c8ef7d4fc8cb5"
 }

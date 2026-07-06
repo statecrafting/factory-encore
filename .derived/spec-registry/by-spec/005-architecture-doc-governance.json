@@ -52,6 +52,6 @@
     "summary": "Human-facing architecture documentation is a derived view of the owning specs. factory-encore owns the codemap/readme generators (`scripts/codemaps/`, `scripts/readmes/`) and the `orchestration/` guides; these are mechanically coupled (an edit requires touching this spec). The `CODEMAP.md` those generators emit is a born-with product artifact, carried into the produced app and governed there, not established here. `docs/` and `README.md` sit inside the coupling gate's built-in bypass floor, so their fidelity is enforced editorially: each doc names the spec(s) it derives from, and a doc change that contradicts an owning spec is a review-blocking defect.\n",
     "title": "Architecture documentation governance: human docs as derived views of the owning specs"
   },
-  "shardHash": "3f0604c2ca97c7bb195c224439a6de9b46801da93b617247f9dcdfba7074c157",
+  "shardHash": "89cb7d778a9d309b96994649bea3578c0f908482fa4d3a8ab5e78ed7821a32b3",
   "specVersion": "1.1.0"
 }

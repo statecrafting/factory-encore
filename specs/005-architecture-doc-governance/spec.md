@@ -92,6 +92,10 @@ and Vue views, never core services, and the orchestration docs MUST keep that
 distinction clear. The generator pipeline described by spec
 `002-encore-generator-core` is the normative source; a change to the pipeline
 MUST be reflected in the affected orchestration documents in the same diff.
+The declarative-overlay set these guides enumerate is `security-core`,
+`api-gateway`, and `data-postgres`; the vestigial `data-redis` marker was
+retired from the catalog and these guides on 2026-07-05 (rate limiting is
+Postgres-native per INV-6).
 
 **FR-03**: `scripts/codemaps/` and `scripts/readmes/` contain per-profile
 generated codemaps and readme templates. They MUST reflect the current Encore

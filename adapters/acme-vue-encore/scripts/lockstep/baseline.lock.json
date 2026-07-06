@@ -26,7 +26,6 @@
     "modules": [
       "api-gateway",
       "data-postgres",
-      "data-redis",
       "security-core",
       "user-management"
     ]

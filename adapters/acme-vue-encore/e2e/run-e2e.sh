@@ -114,7 +114,6 @@ assert_app() {
           ls "$root/apps/api/db/migrations/"*user_management*.sql >/dev/null 2>&1 && af "um:migration" || { fail "  user-management migration missing"; ASSERT_RC=1; }
           ;;
         security-core)  af "sc:overlay" ;;
-        data-redis)     grep -q "REDIS_URL" "$root/apps/api/.env.example" 2>/dev/null && af "redis:env" || warn "  REDIS_URL not in .env.example" ;;
         data-postgres)  af "pg:marker" ;;
       esac
     done

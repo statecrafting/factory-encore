@@ -17,7 +17,7 @@ summary: >
   `user_account` column) passes lockstep and only breaks at `encore check`. This
   spec stands up an end-to-end harness that drives the generator (spec 002)
   directly against a template-encore checkout across the full profile x module
-  matrix (22 produced apps) and verifies each, replicating stagecraft's scaffold
+  matrix (19 produced apps) and verifies each, replicating stagecraft's scaffold
   contract with no stagecraft and no OAP in the loop. It runs on three lanes,
   mirroring OAP's expensive-e2e posture: a cheap structural matrix gated per-PR
   on the generator surface and folded into the terminal ci-gate; a full
@@ -78,9 +78,9 @@ it does not redefine them.
 #### FR-001: Stagecraft-faithful production
 
 For each single-app profile (`minimal`, `public`, `internal`) the harness MUST
-produce: the base app (no extra modules), each of the five catalog modules
-composed on its own, and all five composed together; for the `dual` topology, the
-two-app output with no extras. That is `3 * (1 + 5 + 1) + 1 = 22` produced apps.
+produce: the base app (no extra modules), each of the four catalog modules
+composed on its own, and all four composed together; for the `dual` topology, the
+two-app output with no extras. That is `3 * (1 + 4 + 1) + 1 = 19` produced apps.
 Profiles are materialised with `setup-app.ts --profile <name> --source
 <template-encore>` (and `setup-dual-app.ts` for dual) under `NO_INSTALL=true`;
 extra modules are composed with `add-module.ts <mod> --no-install` in the
@@ -162,8 +162,8 @@ FR-006 (drift issue-routing).
 
 ## 4. Acceptance criteria
 
-**AC-1.** `npm run e2e:struct` produces all 22 apps and passes structural
-verification (22/22) against a template-encore checkout, requiring only Node +
+**AC-1.** `npm run e2e:struct` produces all 19 apps and passes structural
+verification (19/19) against a template-encore checkout, requiring only Node +
 tsx.
 
 **AC-2.** `npm run e2e:build` additionally builds each produced app

@@ -176,8 +176,8 @@ scaffold:
   #     and web services, plus the security-core configuration. These are always
   #     present; they are not composed.
   #   composable extras: user-management (the app-managed role catalog + admin
-  #     views) and api-gateway (the connectivity-test view); data-postgres /
-  #     data-redis are declarative knobs. Which extras a profile ships BY DEFAULT
+  #     views) and api-gateway (the connectivity-test view); data-postgres is a
+  #     declarative knob. Which extras a profile ships BY DEFAULT
   #     is declared once below in profiles[].modules (STRUCT-1 single authority,
   #     read by scripts/setup-app.ts); a run can compose further extras via
   #     --with. The prior variant-keyed scaffold.modules map was a second

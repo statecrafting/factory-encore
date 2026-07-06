@@ -463,7 +463,7 @@ Each sub-skill accepts a **variant parameter** (`public`, `internal`, or `dual`)
 9. [Implementation Patterns: Shared Packages](#9-implementation-patterns--shared-packages)
 10. [Configuration Reference](#10-configuration-reference)
 11. [Authentication Architecture](#11-authentication-architecture)
-12. [Auth is Stateless JWT: Redis is Rate-Limit Only](#12-auth-is-stateless-jwt--redis-is-rate-limit-only)
+12. [Auth is Stateless JWT: Rate Limiting is Postgres-Native](#12-auth-is-stateless-jwt--rate-limiting-is-postgres-native)
 13. [API Gateway (BFF Pattern)](#13-api-gateway-bff-pattern)
 14. [Adding a Feature: Complete Walkthrough](#14-adding-a-feature--complete-walkthrough)
 15. [Removing Template Elements](#15-removing-template-elements)
@@ -482,7 +482,7 @@ The template supports three deployment configurations. The codebase is the same 
 | **Internal** | `apps/api` + `apps/web` | AUTH_DRIVER=rauthy (+ mock dev) | Staff-facing. Owns the SQLDatabase directly. |
 | **Dual** | Two independent Encore apps: `<dest>/public` + `<dest>/internal` | public=rauthy, internal=rauthy | Both external user and staff stacks. Each is a complete standalone Encore app. |
 
-Auth is stateless RS256 JWT in all three variants. There is no session store. Redis, when present, is rate-limit backing only (set via `REDIS_URL`).
+Auth is stateless RS256 JWT in all three variants. There is no session store. Rate limiting is Postgres-native (an UNLOGGED counter table in `SQLDatabase("app")`, per INV-6); there is no Redis in this stack.
 
 **Stack selection** is determined by the factory's Build Specification `variant` field (or derived from `sitemap.json` `areas[].viewType` in standalone mode):
 - `public-site` logical surface present (viewType `public` or `public-authenticated`) → public stack needed
@@ -516,7 +516,7 @@ Auth is stateless RS256 JWT in all three variants. There is no session store. Re
 │   │   │   ├── cookies.ts           cookie helpers
 │   │   │   ├── audit.ts             audit_log writer
 │   │   │   ├── logger.ts            PII-redacting logger (CC-006)
-│   │   │   ├── rate-limit.ts        apiRateLimit middleware (Redis-backed if REDIS_URL set)
+│   │   │   ├── rate-limit.ts        apiRateLimit middleware (Postgres-native UNLOGGED counter)
 │   │   │   ├── security-headers.ts  securityHeaders middleware (CSP, HSTS, Permissions-Policy)
 │   │   │   └── secrets.ts           secret() declarations for JWT keys + app secrets
 │   │   │
@@ -590,7 +590,6 @@ Auth is stateless RS256 JWT in all three variants. There is no session store. Re
 │   ├── security-core/               Declarative overlay: CORS env + global_cors note
 │   ├── api-gateway/                 Declarative overlay: GATEWAY_OAUTH_* secrets + connectivity test view
 │   ├── data-postgres/               Declarative overlay: documents base SQLDatabase; no pg.Pool files
-│   ├── data-redis/                  Declarative overlay: REDIS_* envVars for rate-limit backing
 │   └── user-management/             Reference feature module: full Encore service directory
 │
 ├── docker/                          Encore self-host docker-compose + container guide (README)
@@ -663,9 +662,9 @@ All code added to this template **must** use these technologies. Do not introduc
 | **Linting** | ESLint 9 + Prettier | Flat config format. |
 | **Runtime** | Node >= 24.0.0, npm >= 10.0.0 | See `.nvmrc` |
 
-**Do NOT introduce**: Express/`express-session` (retired), Vuex, ORMs (Prisma/TypeORM/Sequelize/Drizzle), Webpack, Joi/Yup/class-validator, CSS-in-JS, Redux-style patterns, Tailwind CSS, string-concatenated SQL, `pg.Pool` (use `SQLDatabase` tagged templates), Redis session stores.
+**Do NOT introduce**: Express/`express-session` (retired), Vuex, ORMs (Prisma/TypeORM/Sequelize/Drizzle), Webpack, Joi/Yup/class-validator, CSS-in-JS, Redux-style patterns, Tailwind CSS, string-concatenated SQL, `pg.Pool` (use `SQLDatabase` tagged templates), Redis in any role.
 
-Redis is **rate-limit backing only**: set `REDIS_URL` to enable it; never use it as a session or token store.
+Rate limiting is Postgres-native (an UNLOGGED counter table in `SQLDatabase("app")`, per INV-6); there is no Redis in this stack.
 
 ---
 
@@ -830,7 +829,7 @@ The template uses an additive module system governed by the manifest v2 contract
 
 1. **Feature modules** (e.g., `user-management`): contribute a complete Encore service directory (`services[]`), migrations, frontend views, and `webSnippetFile` nav registration. These are the primary domain extension mechanism.
 
-2. **Declarative overlay modules** (e.g., `security-core`, `api-gateway`, `data-postgres`, `data-redis`): contribute only declarative config (secrets, CORS entries, env vars) and optional frontend payloads. Their backend function is already provided by the base Encore app; the module is the install/remove UX for that configuration.
+2. **Declarative overlay modules** (e.g., `security-core`, `api-gateway`, `data-postgres`): contribute only declarative config (secrets, CORS entries, env vars) and optional frontend payloads. Their backend function is already provided by the base Encore app; the module is the install/remove UX for that configuration.
 
 ### Module Structure
 
@@ -912,7 +911,6 @@ modules/{module-name}/
 | `security-core` | Declarative overlay | Declares CORS env; points at `encore.app` `global_cors`. No `apps/api/src/**` files. |
 | `api-gateway` | Declarative overlay + frontend | Declares `GATEWAY_OAUTH_*` secrets; keeps the `ConnectivityTestView.vue` frontend payload. |
 | `data-postgres` | Declarative overlay | Documents that persistence is the base `SQLDatabase("app")`; no `pg.Pool` files. |
-| `data-redis` | Declarative overlay | Declares `REDIS_*` envVars for the rate-limit backend selector. |
 | `user-management` | Feature module | Full Encore service directory: `user-management/encore.service.ts` + endpoints + model + migration. The reference shape for all future feature modules. |
 
 ---
@@ -1403,12 +1401,12 @@ GATEWAY_OAUTH_SCOPE={scope}
 GATEWAY_TIMEOUT_MS=30000
 ```
 
-**Redis (rate-limit backing: optional):**
-```
-REDIS_URL={Redis connection string}      # if set, rate-limiter uses Redis; otherwise in-memory
-```
+**Rate limiting (no configuration required):**
 
-Redis is NOT a session store. Session state is in httpOnly JWT cookies + the `refresh_token` table.
+Rate limiting is Postgres-native: the `apiRateLimit` middleware uses an UNLOGGED
+`rate_limit_counter` table in `SQLDatabase("app")` (per INV-6). There is no
+`REDIS_URL` and no Redis in this stack. Session state is in httpOnly JWT cookies
+plus the `refresh_token` table, never a session store.
 
 ### 10.3 CSP Configuration
 
@@ -1527,7 +1525,7 @@ actions: { fetchUser(), login(driver: string), logout(), checkStatus() }
 
 ---
 
-## 12. Auth is Stateless JWT: Redis is Rate-Limit Only
+## 12. Auth is Stateless JWT: Rate Limiting is Postgres-Native
 
 Auth in this template is **stateless RS256 JWT**, not session-based:
 
@@ -1539,7 +1537,7 @@ CSRF:          double-submit cookie, constant-time compare (not session-backed)
 OAuth state:   short-lived OAUTH_STATE cookie (rauthy.ts), not a session
 ```
 
-**Redis**, when configured via `REDIS_URL`, swaps the in-memory rate-limit backend (`lib/rate-limit.ts`) for a Redis-backed one. Redis is **never** a session store or token store in this template.
+**Rate limiting** is Postgres-native (`lib/rate-limit.ts`): an atomic `INSERT ... ON CONFLICT` fixed-window counter on an UNLOGGED `rate_limit_counter` table in `SQLDatabase("app")`, per INV-6. There is no Redis in this stack, and no session or token store: state lives in httpOnly JWT cookies plus the `refresh_token` table.
 
 Two bounded latencies exist and are acceptable by design:
 1. **Access-token revocation latency**: up to one access-token TTL (~15 min) after DB revocation

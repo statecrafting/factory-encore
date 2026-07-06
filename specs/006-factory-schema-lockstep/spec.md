@@ -82,7 +82,9 @@ The checker MUST verify, against a baseline checkout at the pinned ref:
 - **Catalog binding**: every `modules` entry has a `manifest.json` in this repo's
   (factory-encore) catalog. Phase 2 relocated the catalog out of the baseline
   into this repo, so the baseline no longer co-carries it; only the generator's
-  own catalog is verified.
+  own catalog is verified. The pinned `modules` set tracks the catalog: it
+  dropped from five to four on 2026-07-05 when the vestigial `data-redis`
+  marker was retired (rate limiting is Postgres-native per INV-6).
 
 #### FR-003: The invariant pin defers until the Phase 3 handshake, then activates
 

@@ -148,7 +148,6 @@ List every module found in the `modules/` directory. For each:
 | `security-core` | Keep (declarative overlay) | Keep | Keep |
 | `api-gateway` | Keep (if BFF proxying needed) | Remove | Keep (public) |
 | `data-postgres` | Keep (declarative; base app has SQLDatabase) | Keep | Keep |
-| `data-redis` | Keep (if rate-limit via Redis needed) | Keep | Keep |
 | `user-management` | Conditional | Keep (if user admin needed) | Conditional |
 
 Note: auth drivers (`mock`, `rauthy`) are now built into `apps/api/auth/` and selected by `AUTH_DRIVER`: they are not installable modules. The session-store modules (`session-store-postgres`, `session-store-redis`, `api-docs`) are retired; they have no Encore analog.
@@ -162,7 +161,6 @@ Read `apps/api/.env.example`.
 Note:
 - `AUTH_DRIVER` default and available values
 - JWT key references (populated by `npm run generate-keys`)
-- `REDIS_URL` (optional: rate-limit backing only, not a session store)
 - Database bindings (handled by `infra.config.json`, not raw `DB_*` env vars)
 - `FRONTEND_URL`, `CORS_ORIGIN` equivalents in `encore.app` `global_cors`
 

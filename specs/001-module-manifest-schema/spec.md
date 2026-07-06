@@ -17,16 +17,15 @@ summary: >
   The module manifest schema: every module under modules/ declares its
   composition declaratively — services, secrets, corsEntries, middlewares,
   migrations — consumed by the generator at compose time. Service modules
-  additionally ship an Encore service directory under files/. The four
-  cross-cutting modules (security-core, api-gateway, data-postgres,
-  data-redis) are pure declarative payloads with no copied source files.
+  additionally ship an Encore service directory under files/. The three
+  cross-cutting modules (security-core, api-gateway, data-postgres) are
+  pure declarative payloads with no copied source files.
 establishes:
   - "adapters/acme-vue-encore/scripts/lib/manifest.schema.ts"
   - "adapters/acme-vue-encore/scripts/lib/modules-ts-generator.ts"
   - "adapters/acme-vue-encore/modules/security-core/"
   - "adapters/acme-vue-encore/modules/api-gateway/"
   - "adapters/acme-vue-encore/modules/data-postgres/"
-  - "adapters/acme-vue-encore/modules/data-redis/"
 ---
 
 # 001. Module manifest schema: declarative service composition and the module taxonomy
@@ -47,7 +46,7 @@ composition steps.
 ## 2. Territory
 
 This spec owns the manifest schema type definition and the modules-ts
-generator, plus the four cross-cutting modules whose composition is purely
+generator, plus the three cross-cutting modules whose composition is purely
 declarative. Service modules (those that also ship an Encore service
 directory under `files/`) are owned by the spec that governs that service's
 domain (e.g., spec 003 owns `modules/user-management/`).
@@ -111,18 +110,23 @@ The current module set and their types:
 | `security-core` | Cross-cutting declarative | Env declarations; no copied service files |
 | `api-gateway` | Cross-cutting declarative | `secrets[]` (GATEWAY_OAUTH_*), `corsEntries[]`; no copied service files |
 | `data-postgres` | Cross-cutting declarative | `secrets[]`; no copied service files |
-| `data-redis` | Cross-cutting declarative | `envVars[]` (REDIS_URL); no copied service files |
 | `user-management` | Service module | `services[]`, `migrations[]`, `secrets[]`, `middlewares[]`; ships `files/user-management/` |
 
 #### FR-004 — Cross-cutting modules are pure declarative payloads
 
-The four cross-cutting modules (`security-core`, `api-gateway`,
-`data-postgres`, `data-redis`) MUST NOT include an `apps/api/src/**` source
+The three cross-cutting modules (`security-core`, `api-gateway`,
+`data-postgres`) MUST NOT include an `apps/api/src/**` source
 file tree in their `files/` payload. Their composition is entirely through
 the declarative fields (`secrets`, `corsEntries`, `envVars`). Their backend
 function is already provided by the base Encore app (`apps/api/lib`,
 `apps/api/db`, `apps/api/gateway`); the module exists to make
 add/remove-module operations uniform across all installable units.
+
+Redis-class needs (rate limiting, ephemeral counters) are served by
+Postgres in the base app per template-encore's `security-data-invariants`
+INV-6 (an UNLOGGED `rate_limit_counter` table). There is no Redis module:
+the earlier `data-redis` marker was a vestigial mirror of a `REDIS_URL`
+knob the baseline no longer reads, retired 2026-07-05.
 
 #### FR-005 — Service modules ship a complete Encore service directory
 
@@ -162,14 +166,14 @@ validation tests cover each service-composition field, each cross-cutting
 module validates successfully, and the `generateWebModulesTs` tests remain
 active.
 
-**AC-3.** The four cross-cutting module directories contain no
+**AC-3.** The three cross-cutting module directories contain no
 `apps/api/src/**` file tree; their `manifest.json` validates against schema
 v2 with zero errors.
 
 **AC-4.** `npx spec-spine compile` exits 0; `npx spec-spine lint
 --fail-on-warn` exits 0; `npx spec-spine couple --base origin/main` exits
 0 for `scripts/lib/manifest.schema.ts`, `scripts/lib/modules-ts-generator.ts`,
-and the four cross-cutting module directories owned here.
+and the three cross-cutting module directories owned here.
 
 ## 5. Out of scope
 
@@ -182,4 +186,4 @@ and the four cross-cutting module directories owned here.
   spec's territory.
 - **Future module additions**: new modules under `modules/` that follow this
   schema are added by their owning specs; this spec governs only the schema
-  contract and the four cross-cutting modules listed in §3.2.
+  contract and the three cross-cutting modules listed in §3.2.
