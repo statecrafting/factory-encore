@@ -136,9 +136,13 @@ the application.
 
 After composition, `setup-app` MUST invoke `encore gen client` (and
 optionally `--lang=openapi`) against the destination app when the Encore
-CLI is available in the environment. When the CLI is not present, the
-committed typed-client reference (born-with template-encore) is left in place with a log
-note.
+CLI is available in the environment. It MUST target the canonical committed
+client path the born-with CI checks, `apps/web/src/lib/encore-client.ts`, by
+running the destination app's own `gen:client` script
+(`npm --prefix apps/api run gen:client`) rather than a hand-rolled `--output`
+(an earlier direct invocation wrote to `apps/web/src/client.ts`, a stray file
+nothing reads). When the CLI is not present, the committed typed-client
+reference (born-with template-encore) is left in place with a log note.
 
 ### 3.2 `encore-composer.ts` — the composition engine
 

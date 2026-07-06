@@ -418,7 +418,11 @@ async function main(): Promise<void> {
       console.warn('  npm install skipped or failed (missing CLI?), run it manually if needed')
     }
     try {
-      execSync('encore gen client --output ./apps/web/src/client.ts', { cwd: opts.dest, stdio: 'inherit' })
+      // Run the app's own gen:client script (apps/api/package.json) so the
+      // output path, env, and language match the canonical target the born-with
+      // CI checks: apps/web/src/lib/encore-client.ts. (The earlier direct
+      // invocation wrote to apps/web/src/client.ts, a stray file nothing reads.)
+      execSync('npm --prefix apps/api run gen:client', { cwd: opts.dest, stdio: 'inherit' })
     } catch {
       console.warn('  encore gen client skipped (encore CLI not found), run it manually if needed')
     }
