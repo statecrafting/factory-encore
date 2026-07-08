@@ -19,7 +19,7 @@ scaffolded.
 
 - Project identity applied (name, display name, base path).
 - Auth wired per the chosen driver:
-  - **rauthy-oidc**: write the `RAUTHY_*` env contract into the `.env.*.example`
+  - **rauthy**: write the `RAUTHY_*` env contract into the `.env.*.example`
     files: `RAUTHY_ISSUER`, `RAUTHY_CLIENT_ID`, `RAUTHY_CLIENT_SECRET`,
     `RAUTHY_REDIRECT_URI`, `RAUTHY_SCOPES` (default `openid profile email groups`),
     and `RAUTHY_DEFAULT_ROLE`. Map the `roles` and `groups` claims to application

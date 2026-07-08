@@ -68,7 +68,7 @@ capabilities:
 
 supported_auth:
   - method: "oidc"
-    driver: "rauthy-oidc"
+    driver: "rauthy"
     providers: ["rauthy"]
     description: >
       OpenID Connect via rauthy using the openid-client library. Authorization
@@ -224,17 +224,17 @@ scaffold:
       default: true
     - name: "public"
       variant: "single-public"
-      auth_driver: "rauthy-oidc"
+      auth_driver: "rauthy"
       modules: []
       default: false
     - name: "internal"
       variant: "single-internal"
-      auth_driver: "rauthy-oidc"
+      auth_driver: "rauthy"
       modules: ["user-management"]
       default: false
     - name: "dual"
       variant: "dual"
-      auth_driver: "rauthy-oidc"
+      auth_driver: "rauthy"
       modules: []
       default: false
   emits:
@@ -318,7 +318,7 @@ dual_stack:
       web: "apps/web"
       port_api: 4000
       port_web: 5173
-      auth_driver: "rauthy-oidc"
+      auth_driver: "rauthy"
       env_example: "apps/api/.env.example"
     internal:
       dir: "internal"
@@ -326,7 +326,7 @@ dual_stack:
       web: "apps/web-internal"
       port_api: 4000
       port_web: 5174
-      auth_driver: "rauthy-oidc"
+      auth_driver: "rauthy"
       env_example: ".env.internal.example"
   data_access:
     public: "proxy"

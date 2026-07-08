@@ -169,6 +169,15 @@ separate, reviewable acts.
 - **Implementation edges land later.** The `refines: 001` (module surfaces) and
   `extends: 004` (dual generator) edges, plus the template-encore baseline edits
   pinned via lockstep (006), are promoted by the follow-on implementation PRs.
+- **Manifest auth-driver identifier normalized (orthogonal).** Independent of
+  this spec's data-redis surfaces, `manifest.yaml`'s auth-driver identifier was
+  renamed `rauthy-oidc` to `rauthy` (across `supported_auth.driver`,
+  `scaffold.profiles[].auth_driver`, `dual_stack.*.auth_driver`, the configurer
+  agent, and docs) to match the runtime `AUTH_DRIVER=rauthy` and OAP spec 229's
+  mock|rauthy model. Cosmetic: `setup-app.ts` already bakes `AUTH_DRIVER=rauthy`,
+  so generated output is byte-identical (lockstep verified). Recorded here
+  because 008 is the manifest's current design authority; it introduces no
+  data-redis change.
 
 ## 6. Out of scope
 

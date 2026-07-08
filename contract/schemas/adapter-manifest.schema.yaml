@@ -276,8 +276,11 @@ scaffold:
   runtime: string                   # Execution runtime; stagecraft Create MVP accepts only "node-24"
   args_schema: object               # JSON Schema for --args accepted by the entry point
   profiles:                         # Declared variant/profile combinations
-    - name: string                  # e.g., "dual-saml-postgres"
+    - name: string                  # e.g., "internal"
       variant: string               # Matches Build Spec project.variant
+      auth_driver: string           # App-level AUTH_DRIVER: "mock" | "rauthy"
+                                    # only (spec 229). Upstream IdPs federate
+                                    # inside Rauthy, not as values here.
       modules: [string]             # Module names activated for this profile
       default: boolean
   emits:                            # What scaffold produces, relative to project root
@@ -365,7 +368,11 @@ dual_stack:
   audience_to_variant:
     <audience_name>: string         # e.g., citizen: "public", staff: "internal"
 
-  # Variant names used in directory_conventions {variant} placeholder
+  # Variant names used in directory_conventions {variant} placeholder.
+  # NOTE (spec 229): a variant's auth_driver is the app-level driver, only
+  # "mock" (dev) or "rauthy" (prod). Upstream IdPs (github/google/auth0/entra/
+  # SAML-via-Google-Workspace) are Rauthy upstream-provider config, NOT values
+  # of this field.
   variants:
     public:
       dir: string                   # top-level copy dir, e.g. "public"
@@ -373,7 +380,7 @@ dual_stack:
       web: string                   # SPA served, e.g. "apps/web"
       port_api: integer             # e.g., 4000
       port_web: integer             # e.g., 5173
-      auth_driver: string           # e.g., "saml"
+      auth_driver: string           # "mock" | "rauthy" only (spec 229; see note above)
       env_example: string           # e.g., ".env.external.example"
     internal:
       dir: string                   # e.g., "internal"
@@ -381,7 +388,7 @@ dual_stack:
       web: string                   # e.g., "apps/web-internal"
       port_api: integer             # e.g., 4000
       port_web: integer             # e.g., 5174
-      auth_driver: string           # e.g., "auth0"
+      auth_driver: string           # "mock" | "rauthy" only (spec 229; see note above)
       env_example: string           # e.g., ".env.internal.example"
 
   # Data flow constraints

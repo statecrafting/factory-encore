@@ -48,7 +48,7 @@ The `acme-vue-encore` adapter manifest (`adapters/acme-vue-encore/manifest.yaml`
 
 | Method | Driver | Description |
 |--------|--------|-------------|
-| OIDC | rauthy-oidc | Authorization code flow with PKCE (S256). Tokens validated against issuer JWKS; roles/groups claims map to application roles. RP-initiated logout via end_session_endpoint. |
+| OIDC | rauthy | Authorization code flow with PKCE (S256). Tokens validated against issuer JWKS; roles/groups claims map to application roles. RP-initiated logout via end_session_endpoint. |
 | Mock | mock | Built-in mock driver for development and test only. |
 
 ## Commands
@@ -90,9 +90,9 @@ The `{stack}` placeholder refers to the Vue SPA app (`web` or `web-internal`); t
 | Profile | Variant | Auth driver | Default modules |
 |---------|---------|-------------|-----------------|
 | minimal (default) | single | mock | none |
-| public | single-public | rauthy-oidc | none |
-| internal | single-internal | rauthy-oidc | user-management |
-| dual | dual | rauthy-oidc | none |
+| public | single-public | rauthy | none |
+| internal | single-internal | rauthy | user-management |
+| dual | dual | rauthy | none |
 
 ## Governance sub-envelope
 
