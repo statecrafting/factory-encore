@@ -107,7 +107,12 @@ export function installModule(input: InstallModuleInput): InstallModuleResult {
     manifest.migrations.length > 0 ||
     manifest.secrets.length > 0 ||
     manifest.corsEntries.length > 0 ||
-    manifest.infraResources.redis !== undefined
+    // Generic over infraResources: composeModule must run for ANY declared
+    // infra.config resource, not just `redis`. A type-specific check
+    // (infraResources.redis !== undefined) would silently skip composition for a
+    // future resource type (object storage, pub/sub, metrics) added to
+    // infraResourcesSchema without a matching guard update here.
+    Object.values(manifest.infraResources).some((r) => r !== undefined)
   ) {
     const moduleDir = path.join(adapterRoot, 'modules', moduleName)
     const apiDir = path.join(projectRoot, 'apps', 'api')

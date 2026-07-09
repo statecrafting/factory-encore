@@ -172,7 +172,18 @@ export function mergeRedis(
   return next
 }
 
-/** Returns a new redis map with the given cluster names removed. */
+/**
+ * Returns a new redis map with the given cluster names removed.
+ *
+ * Invariant: a cluster name is treated as owned by a single module. mergeRedis is
+ * idempotent (it never overwrites an existing cluster), but removeRedis deletes by
+ * name unconditionally, so if two modules ever declared the same cluster (e.g.
+ * both `{ cluster: 'cache' }`) decomposing either would remove the shared entry
+ * and silently break the other. Today only data-redis declares a redis resource,
+ * but infraResourcesSchema is designed for extension: a second redis-declaring
+ * module MUST pick a distinct cluster name (or this remove path must become
+ * refcounted).
+ */
 export function removeRedis(
   current: Record<string, RedisCluster>,
   clusters: string[],

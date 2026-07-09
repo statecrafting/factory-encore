@@ -195,6 +195,18 @@ separate, reviewable acts.
   so generated output is byte-identical (lockstep verified). Recorded here
   because 008 is the manifest's current design authority; it introduces no
   data-redis change.
+- **FR-001 hardening (post-#22 review).** Three low-severity nits from the
+  data-redis review are closed as refinements to the FR-001 paths: (1) the
+  `composeModule` trigger in `install-module.ts` is generic over `infraResources`
+  (`Object.values(...).some(r => r !== undefined)`) rather than checking `redis`
+  specifically, so a future resource type added to `infraResourcesSchema` cannot
+  parse-but-silently-skip composition; (2) the redis `cluster` name is constrained
+  to `/^[a-z][a-z0-9-]*$/` in `manifest.schema.ts`, closing the prototype-pollution
+  vector where `mergeRedis` writes the name as an object key reached via `in`;
+  (3) the `removeRedis` shared-cluster invariant (merge is idempotent, remove is
+  unconditional) is documented in `encore-composer.ts`. No behavior change for the
+  shipped data-redis module (`cache` matches the regex; the guard fires
+  identically for `redis`).
 
 ## 6. Out of scope
 

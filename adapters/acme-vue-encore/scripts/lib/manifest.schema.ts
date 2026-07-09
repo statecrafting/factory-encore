@@ -43,7 +43,16 @@ const migrationSchema = z.object({
  * namespace.
  */
 const redisResourceSchema = z.object({
-  cluster: z.string().default('cache'),
+  // Constrain the cluster name to a lowercase kebab identifier. mergeRedis writes
+  // it as an object key reached via the `in` operator, which walks the prototype
+  // chain, so an unconstrained value like "__proto__"/"constructor" could shadow
+  // an inherited property instead of creating an own key. Manifests are
+  // adapter-authored (low blast radius), but this constraint costs nothing and
+  // closes the prototype-pollution vector.
+  cluster: z
+    .string()
+    .regex(/^[a-z][a-z0-9-]*$/, 'cluster must be a lowercase kebab identifier')
+    .default('cache'),
   keyPrefix: z.string().optional(),
 })
 
