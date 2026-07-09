@@ -1,13 +1,13 @@
 ---
 id: "009-tenant-cron-scheduler-module"
 title: "Tenant self-hosted cron: the in-app scheduler module (postgres small-scale / +redis large-scale)"
-status: draft
+status: approved
 created: "2026-07-08"
 owner: bart
 kind: feature
 domain: generator
 risk: medium
-implementation: in-progress  # Module code lands with this spec. The scheduler service, the shared-app-db migration, the tiered lock, and the manifest land in this PR; baseline.lock.json gains "cron" (lockstep, spec 006) and born-with.ts self-registers the spec in GENERATOR_META_SPEC_IDS (spec 002). Flips to complete on merge. The encore-metadata auto-extraction bridge (section 5) ships its explicit-registration seam now and stages the build-time metadata reader as a recorded residual.
+implementation: complete  # Module code landed with this spec (#20). The scheduler service, the shared-app-db migration, the tiered lock, and the manifest shipped; baseline.lock.json gained "cron" (lockstep, spec 006) and born-with.ts self-registers the spec in GENERATOR_META_SPEC_IDS (spec 002). The encore-metadata auto-extraction bridge (section 5) shipped its explicit-registration seam; the build-time metadata reader stays a recorded residual (does not block completion). This follow-up reconciles the Redis prose to the shipped typed contract (the lock reads the baseline lib/redis client over REDIS_HOST/REDIS_USER/REDIS_PASSWORD; there is no REDIS_URL and cron declares no ioredis dep).
 depends_on:
   - "001-module-manifest-schema"      # the manifest v2 grammar this module declares against
   - "002-encore-generator-core"       # the generator that composes the module + the base SQLDatabase("app") the store extends
@@ -24,8 +24,10 @@ summary: >
   polling daemon that fires due jobs against the app's own endpoints. The daemon
   fires each due job exactly once across replicas via a lock tiered on the
   tenant's create-project scale choice: a Postgres atomic claim by default
-  (small scale, zero extra infra), a Redis distributed lock when REDIS_URL is set
-  (large scale). One code path, tier auto-detected by REDIS_URL. The module
+  (small scale, zero extra infra), a Redis distributed lock when the typed
+  REDIS_HOST connection is configured (large scale). One code path, tier
+  auto-detected by the baseline lib/redis client (REDIS_HOST/REDIS_USER/
+  REDIS_PASSWORD; there is no REDIS_URL). The module
   therefore requires data-postgres (always) and optionally peers with data-redis
   (large tier only). Distinct from stagecraft's own control-plane sweepers
   (OAP spec 224), which stay on per-sweeper K8s CronJobs.
@@ -50,7 +52,8 @@ extends:
 > Provenance: adapter-side companion to OAP spec
 > `230-tenant-cron-scheduler-module`, which fixes the tenant-cron contract
 > (cron requires data-postgres, optionally peers with data-redis, the scheduler
-> auto-detects `REDIS_URL` to pick the lock backend) and stages this module as
+> auto-detects the typed `REDIS_HOST` connection to pick the lock backend) and
+> stages this module as
 > the factory-encore realization. The create-project form wiring (the Infra-axis
 > cron capability + Small/Large scale toggle) is a follow-on OAP spec-227 stage.
 
@@ -135,22 +138,25 @@ composed (spec 003 FR-002 precedent), so it applies after the base schema.
 
 The daemon MUST fire each due job exactly once even across multiple replicas.
 `lock.ts` exposes a single `tryAcquire(taskId)` whose backend is auto-detected by
-`REDIS_URL`, mirroring the existing `data-redis` opt-in idiom:
+`isRedisConfigured()` (the typed `REDIS_HOST` connection), mirroring the existing
+`data-redis` opt-in idiom:
 
 - **Small scale (postgres-only, default).** The Postgres atomic claim:
   `UPDATE task_schedules SET last_run_at = now() WHERE id = $1 AND next_run_at <=
   now() RETURNING true`. Exactly one replica wins the row. Zero extra
   infrastructure; correct for single-replica and light multi-replica deploys.
-- **Large scale (postgres + redis).** When `REDIS_URL` is set, a Redis lock
-  (`SET cron:lock:<id> <token> NX PX <ttl>`) is acquired before the claim, the
-  production-grade tier where row-level contention on the schedule table would
-  bottleneck at higher replica counts. `ioredis` is a lazily-imported
-  `packageDep`, loaded only when `REDIS_URL` is present, so the small tier pulls
-  no Redis dependency at runtime.
+- **Large scale (postgres + redis).** When the typed `REDIS_HOST` connection is
+  configured, a Redis lock (`SET cron:lock:<id> <token> NX PX <ttl>`) is acquired
+  before the claim, the production-grade tier where row-level contention on the
+  schedule table would bottleneck at higher replica counts. The lock client is the
+  baseline `lib/redis` seam (template-encore spec 018), constructed lazily so the
+  small tier opens no Redis socket; `ioredis` is a baseline dependency, not a cron
+  `packageDep`.
 
-The large tier's `REDIS_URL` is provisioned by the promoted `data-redis` resource
-(spec 008 FR-001) and, dev-side, by deployd `previewRedis` (OAP spec 227
-Stage 3). This module declares the dependency (`optionalPeers: ["data-redis"]`)
+The large tier's typed `REDIS_HOST`/`REDIS_USER`/`REDIS_PASSWORD` triple is
+provisioned by the promoted `data-redis` resource (spec 008 FR-001) and, dev-side,
+by deployd `previewRedis` (OAP spec 227). This module declares the dependency
+(`optionalPeers: ["data-redis"]`)
 and owns its lock client; it does not own the Redis provisioning.
 
 ### FR-004, the polling daemon
@@ -187,11 +193,13 @@ shortcuts:
 - `optionalPeers: ["data-redis"]`: the large-scale Redis lock backend.
 - `services: ["scheduler"]`.
 - `migrations: [{ source: "db/1_create_task_schedules.up.sql", description: ... }]`.
-- `packageDeps: { "apps/api": { "cron-parser": "^5.6.1", "ioredis": "^5.4.1" } }`
-  (the scheduler service and its lock client run in the Encore backend).
-- `envVars`: `SCHEDULER_POLL_INTERVAL_MS` (optional, default 10000),
-  `SCHEDULER_BASE_URL` (optional, default the same-process gateway), and
-  `REDIS_URL` (optional; when set, selects the large-scale Redis lock).
+- `packageDeps: { "apps/api": { "cron-parser": "^5.6.1" } }` (the scheduler
+  service runs in the Encore backend; the Redis lock client is the baseline
+  `lib/redis` seam, so `ioredis` is a baseline dependency, not declared here).
+- `envVars`: `SCHEDULER_POLL_INTERVAL_MS` (optional, default 10000) and
+  `SCHEDULER_BASE_URL` (optional, default the same-process gateway). The Redis
+  connection (`REDIS_HOST`/`REDIS_USER`/`REDIS_PASSWORD`) is baseline env owned by
+  the `data-redis` resource, not declared as a cron envVar.
 - `middlewares: []`, `secrets: []`, `corsEntries: []`, `files: {}` (the service
   ships via `services`, the schema via `migrations`; there are no web-side
   files).
@@ -245,15 +253,15 @@ lands, a generated app using cron registers its jobs through the FR-007 seam.
   precedent).
 - **AC-3.** The scheduler store declares `SQLDatabase.named("app")` and no
   standalone `SQLDatabase` (INV-11); the migration targets the base app database.
-- **AC-4.** `lock.ts` uses the Postgres atomic claim when `REDIS_URL` is unset and
-  the Redis lock when it is set; `ioredis` is imported only on the `REDIS_URL`
-  branch (small tier pulls no Redis dependency at runtime).
+- **AC-4.** `lock.ts` uses the Postgres atomic claim when `isRedisConfigured()` is
+  false (no `REDIS_HOST`) and the Redis lock when it is true; the baseline
+  `lib/redis` client is constructed lazily, so the small tier opens no Redis socket.
 - **AC-5.** `worker.ts` starts the daemon from `encore.service.ts` (not a bare
   top-level import side-effect) and fires against `SCHEDULER_BASE_URL`, with no
   hardcoded loopback literal in the fire path.
 - **AC-6.** `manifest.json` declares `requires: ["data-postgres"]`,
   `optionalPeers: ["data-redis"]`, `services: ["scheduler"]`, the migration, and
-  the three env vars; `manifest.schema` validation passes.
+  the two `SCHEDULER_*` env vars; `manifest.schema` validation passes.
 - **AC-7.** `"cron"` is present in `baseline.lock.json`'s `modules` array and
   `npm run lockstep` passes; `npm run e2e:struct` composes cron.
 - **AC-8.** `npm test` (vitest) is green with no skips in the module/composer
@@ -269,7 +277,7 @@ lands, a generated app using cron registers its jobs through the FR-007 seam.
   227 stage.
 - The data-redis promotion itself (the `redis` infra.config resource + `REDIS_*`
   bindings + template-encore baseline edits via lockstep): spec 008. This module
-  consumes `REDIS_URL`; it does not provision Redis.
+  consumes the typed `REDIS_*` connection; it does not provision Redis.
 - The `encore build docker` cron-metadata auto-extraction reader: FR-008 staged
   residual.
 - Per-service databases: INV-11 forbids them; the single `SQLDatabase("app")` is

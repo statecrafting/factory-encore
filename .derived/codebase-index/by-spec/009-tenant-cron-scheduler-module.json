@@ -63,8 +63,8 @@
       }
     ],
     "specId": "009-tenant-cron-scheduler-module",
-    "specStatus": "draft"
+    "specStatus": "approved"
   },
   "schemaVersion": "1.1.0",
-  "shardHash": "961a18b481dbe543b13617747da6e0bf3fca7d97b442fecc01b2bf1102046d30"
+  "shardHash": "4972d9969d7c3d9ccf0a2b61aaa016b2f4abb765537a4d9e67bbb873df0dd67c"
 }
